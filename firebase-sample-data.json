@@ -1,0 +1,275 @@
+{
+  "users": {
+    "user_001": {
+      "name": "Nguyễn Văn An",
+      "email": "nguyenvanan@example.com",
+      "role": "user",
+      "isActive": true,
+      "createdAt": 1702300000000,
+      "updatedAt": 1702300000000
+    },
+    "user_002": {
+      "name": "Trần Thị Bình",
+      "email": "tranthivinh@example.com",
+      "role": "user",
+      "isActive": true,
+      "createdAt": 1702300100000,
+      "updatedAt": 1702300100000
+    },
+    "user_003": {
+      "name": "Lê Văn Cường",
+      "email": "levancuong@example.com",
+      "role": "admin",
+      "isActive": true,
+      "createdAt": 1702300200000,
+      "updatedAt": 1702300200000
+    },
+    "user_004": {
+      "name": "Phạm Thị Dung",
+      "email": "phamthidung@example.com",
+      "role": "user",
+      "isActive": false,
+      "createdAt": 1702300300000,
+      "updatedAt": 1702300400000
+    },
+    "user_005": {
+      "name": "Hoàng Minh Đức",
+      "email": "hoangminhduc@example.com",
+      "role": "user",
+      "isActive": true,
+      "createdAt": 1702300500000,
+      "updatedAt": 1702300500000
+    }
+  },
+  "cards": {
+    "card_001": {
+      "card_uid": "04:A1:B2:C3:D4:E5:F6",
+      "status": "active",
+      "user_id": "user_001",
+      "user_name": "Nguyễn Văn An",
+      "policy": {
+        "doors": ["door_main"],
+        "time_restrictions": null
+      },
+      "credential_version": 3,
+      "last_credential_at": 1702350000000,
+      "enrolled_at": 1702300000000,
+      "assigned_at": 1702300100000,
+      "updated_at": 1702350000000
+    },
+    "card_002": {
+      "card_uid": "04:B2:C3:D4:E5:F6:A1",
+      "status": "active",
+      "user_id": "user_002",
+      "user_name": "Trần Thị Bình",
+      "policy": {
+        "doors": ["door_main", "door_back"],
+        "time_restrictions": {
+          "start": "08:00",
+          "end": "18:00",
+          "days": [1, 2, 3, 4, 5]
+        }
+      },
+      "credential_version": 5,
+      "last_credential_at": 1702360000000,
+      "enrolled_at": 1702300200000,
+      "assigned_at": 1702300300000,
+      "updated_at": 1702360000000
+    },
+    "card_003": {
+      "card_uid": "04:C3:D4:E5:F6:A1:B2",
+      "status": "pending",
+      "user_id": null,
+      "user_name": null,
+      "policy": {},
+      "credential_version": 0,
+      "last_credential_at": null,
+      "enrolled_at": 1702400000000,
+      "assigned_at": null,
+      "updated_at": 1702400000000
+    },
+    "card_004": {
+      "card_uid": "04:D4:E5:F6:A1:B2:C3",
+      "status": "pending",
+      "user_id": null,
+      "user_name": null,
+      "policy": {},
+      "credential_version": 0,
+      "last_credential_at": null,
+      "enrolled_at": 1702400100000,
+      "assigned_at": null,
+      "updated_at": 1702400100000
+    },
+    "card_005": {
+      "card_uid": "04:E5:F6:A1:B2:C3:D4",
+      "status": "revoked",
+      "user_id": "user_004",
+      "user_name": "Phạm Thị Dung",
+      "policy": {
+        "doors": ["door_main"]
+      },
+      "credential_version": 2,
+      "last_credential_at": 1702300000000,
+      "enrolled_at": 1702200000000,
+      "assigned_at": 1702200100000,
+      "revoked_at": 1702400000000,
+      "updated_at": 1702400000000
+    }
+  },
+  "cardIndex": {
+    "04:A1:B2:C3:D4:E5:F6": "card_001",
+    "04:B2:C3:D4:E5:F6:A1": "card_002",
+    "04:C3:D4:E5:F6:A1:B2": "card_003",
+    "04:D4:E5:F6:A1:B2:C3": "card_004",
+    "04:E5:F6:A1:B2:C3:D4": "card_005"
+  },
+  "devices": {
+    "device_001": {
+      "device_id": "ESP32_MAIN_001",
+      "door_id": "door_main",
+      "door_name": "Cửa chính",
+      "status": "online",
+      "firmware_version": "1.0.0",
+      "registered_at": 1702200000000,
+      "last_heartbeat": 1702450000000,
+      "config": {
+        "offline_mode": true,
+        "sync_interval": 300,
+        "heartbeat_interval": 60
+      }
+    },
+    "device_002": {
+      "device_id": "ESP32_BACK_001",
+      "door_id": "door_back",
+      "door_name": "Cửa sau",
+      "status": "online",
+      "firmware_version": "1.0.0",
+      "registered_at": 1702200100000,
+      "last_heartbeat": 1702449000000,
+      "config": {
+        "offline_mode": true,
+        "sync_interval": 300,
+        "heartbeat_interval": 60
+      }
+    },
+    "device_003": {
+      "device_id": "ESP32_PARKING_001",
+      "door_id": "door_parking",
+      "door_name": "Cổng bãi xe",
+      "status": "offline",
+      "firmware_version": "0.9.5",
+      "registered_at": 1702200200000,
+      "last_heartbeat": 1702300000000,
+      "config": {
+        "offline_mode": false,
+        "sync_interval": 600,
+        "heartbeat_interval": 120
+      }
+    }
+  },
+  "doors": {
+    "door_main": {
+      "name": "Cửa chính",
+      "location": "Tầng 1 - Sảnh chính",
+      "isActive": true,
+      "createdAt": 1702100000000
+    },
+    "door_back": {
+      "name": "Cửa sau",
+      "location": "Tầng 1 - Phía sau",
+      "isActive": true,
+      "createdAt": 1702100100000
+    },
+    "door_parking": {
+      "name": "Cổng bãi xe",
+      "location": "Tầng hầm B1",
+      "isActive": true,
+      "createdAt": 1702100200000
+    }
+  },
+  "access_logs": {
+    "log_001": {
+      "card_uid": "04:A1:B2:C3:D4:E5:F6",
+      "card_id": "card_001",
+      "user_id": "user_001",
+      "user_name": "Nguyễn Văn An",
+      "door_id": "door_main",
+      "door_name": "Cửa chính",
+      "device_id": "ESP32_MAIN_001",
+      "action": "access_granted",
+      "method": "online",
+      "timestamp": 1702440000000
+    },
+    "log_002": {
+      "card_uid": "04:B2:C3:D4:E5:F6:A1",
+      "card_id": "card_002",
+      "user_id": "user_002",
+      "user_name": "Trần Thị Bình",
+      "door_id": "door_main",
+      "door_name": "Cửa chính",
+      "device_id": "ESP32_MAIN_001",
+      "action": "access_granted",
+      "method": "online",
+      "timestamp": 1702441000000
+    },
+    "log_003": {
+      "card_uid": "04:E5:F6:A1:B2:C3:D4",
+      "card_id": "card_005",
+      "user_id": "user_004",
+      "user_name": "Phạm Thị Dung",
+      "door_id": "door_main",
+      "door_name": "Cửa chính",
+      "device_id": "ESP32_MAIN_001",
+      "action": "access_denied",
+      "reason": "card_revoked",
+      "method": "online",
+      "timestamp": 1702442000000
+    },
+    "log_004": {
+      "card_uid": "04:A1:B2:C3:D4:E5:F6",
+      "card_id": "card_001",
+      "user_id": "user_001",
+      "user_name": "Nguyễn Văn An",
+      "door_id": "door_back",
+      "door_name": "Cửa sau",
+      "device_id": "ESP32_BACK_001",
+      "action": "access_denied",
+      "reason": "door_not_allowed",
+      "method": "online",
+      "timestamp": 1702443000000
+    },
+    "log_005": {
+      "card_uid": "04:B2:C3:D4:E5:F6:A1",
+      "card_id": "card_002",
+      "user_id": "user_002",
+      "user_name": "Trần Thị Bình",
+      "door_id": "door_back",
+      "door_name": "Cửa sau",
+      "device_id": "ESP32_BACK_001",
+      "action": "access_granted",
+      "method": "offline",
+      "timestamp": 1702444000000
+    },
+    "log_006": {
+      "card_uid": "UNKNOWN_CARD_123",
+      "card_id": null,
+      "user_id": null,
+      "user_name": null,
+      "door_id": "door_main",
+      "door_name": "Cửa chính",
+      "device_id": "ESP32_MAIN_001",
+      "action": "access_denied",
+      "reason": "card_not_found",
+      "method": "online",
+      "timestamp": 1702445000000
+    }
+  },
+  "admins": {
+    "REPLACE_WITH_YOUR_FIREBASE_UID": {
+      "email": "admin@example.com",
+      "displayName": "Admin",
+      "role": "admin",
+      "createdAt": 1702000000000
+    }
+  }
+}

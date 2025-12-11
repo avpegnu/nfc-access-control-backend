@@ -1,0 +1,32 @@
+{
+  "rules": {
+    "users": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "cards": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "devices": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "access_logs": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "doors": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "cardIndex": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "admins": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    }
+  }
+}
