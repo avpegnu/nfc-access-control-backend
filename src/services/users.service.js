@@ -59,35 +59,44 @@ class UsersService {
 
   /**
    * Create new user
+   * Note: cardUid is now optional - cards are managed separately via /cards endpoints
    */
   async create(userData) {
     const { name, email, cardUid, role = 'user' } = userData;
 
-    // Check if card UID already exists
-    const cardExists = await this.cardExists(cardUid);
-    if (cardExists) {
-      const error = new Error('Card UID đã được sử dụng');
-      error.code = 'CARD_ALREADY_EXISTS';
-      error.statusCode = 400;
-      throw error;
+    // Check if card UID already exists (only if cardUid is provided)
+    if (cardUid) {
+      const cardExists = await this.cardExists(cardUid);
+      if (cardExists) {
+        const error = new Error('Card UID đã được sử dụng');
+        error.code = 'CARD_ALREADY_EXISTS';
+        error.statusCode = 400;
+        throw error;
+      }
     }
 
     const timestamp = Date.now();
     const newUser = {
       name,
       email: email || '',
-      cardUid,
       role,
       isActive: true,
       createdAt: timestamp,
       updatedAt: timestamp
     };
 
+    // Add cardUid if provided (legacy support)
+    if (cardUid) {
+      newUser.cardUid = cardUid;
+    }
+
     // Create user
     const result = await firebaseService.push('users', newUser);
 
-    // Add to cardIndex for fast lookup
-    await firebaseService.set(`cardIndex/${cardUid}`, result.id);
+    // Add to cardIndex for fast lookup (only if cardUid is provided)
+    if (cardUid) {
+      await firebaseService.set(`cardIndex/${cardUid}`, result.id);
+    }
 
     logger.info(`User created: ${name} (${result.id})`);
 

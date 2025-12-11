@@ -46,11 +46,10 @@ const createUserSchema = Joi.object({
   email: Joi.string().email().allow('').optional().messages({
     'string.email': 'Email không hợp lệ'
   }),
-  cardUid: Joi.string().alphanum().min(4).max(20).required().messages({
+  cardUid: Joi.string().alphanum().min(4).max(20).optional().messages({
     'string.alphanum': 'Card UID chỉ chứa chữ và số',
     'string.min': 'Card UID phải có ít nhất 4 ký tự',
-    'string.max': 'Card UID không được quá 20 ký tự',
-    'any.required': 'Card UID là bắt buộc'
+    'string.max': 'Card UID không được quá 20 ký tự'
   }),
   role: Joi.string().valid('user', 'admin').default('user').messages({
     'any.only': 'Role phải là user hoặc admin'
