@@ -7,12 +7,15 @@ const { apiLimiter } = require('./middleware/rateLimiter');
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 const logger = require('./utils/logger');
 
-// Import routes
+// Import legacy routes (for Frontend)
 const authRoutes = require('./routes/auth.routes');
 const usersRoutes = require('./routes/users.routes');
 const doorsRoutes = require('./routes/doors.routes');
 const accessRoutes = require('./routes/access.routes');
 const realtimeRoutes = require('./routes/realtime.routes');
+
+// Import API v1 routes (for ESP32)
+const v1Routes = require('./routes/v1');
 
 // Create Express app
 const app = express();
@@ -25,7 +28,7 @@ app.use(helmet({
 // CORS configuration
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, curl, etc.)
+    // Allow requests with no origin (mobile apps, curl, ESP32, etc.)
     if (!origin) return callback(null, true);
 
     if (ALLOWED_ORIGINS.includes(origin)) {
@@ -73,7 +76,14 @@ app.get('/health', (req, res) => {
   });
 });
 
-// API routes
+// =====================
+// API v1 routes (ESP32)
+// =====================
+app.use('/api/v1', v1Routes);
+
+// =====================
+// Legacy API routes (Frontend)
+// =====================
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/doors', doorsRoutes);
@@ -86,8 +96,12 @@ app.get('/', (req, res) => {
     success: true,
     data: {
       name: 'NFC Access Control API',
-      version: '1.0.0',
-      documentation: '/api'
+      version: '1.4.0',
+      endpoints: {
+        v1: '/api/v1 (ESP32)',
+        legacy: '/api (Frontend)'
+      },
+      documentation: '/api/v1/health'
     }
   });
 });

@@ -53,21 +53,28 @@ Chỉnh sửa file `.env`:
 NODE_ENV=development
 PORT=3001
 
-# JWT Configuration
+# JWT Configuration (Frontend Auth)
 JWT_SECRET=your-super-secret-jwt-key-change-in-production
 JWT_EXPIRES_IN=24h
 
 # Firebase Web API Key
-FIREBASE_WEB_API_KEY=your-web-api-key
+FIREBASE_WEB_API_KEY=your-firebase-web-api-key
 
 # Firebase Admin SDK Service Account (JSON string)
-FIREBASE_SERVICE_ACCOUNT={"type":"service_account","project_id":"...","private_key":"...","client_email":"..."}
+FIREBASE_SERVICE_ACCOUNT={"type":"service_account","project_id":"..."}
 
 # Firebase Database URL
 FIREBASE_DATABASE_URL=https://your-project-id-default-rtdb.firebasedatabase.app
 
-# Device API Keys for ESP32
-DEVICE_API_KEYS=[{"deviceId":"door_main","apiKey":"your-device-api-key","name":"Main Door"}]
+# Device Secrets for ESP32 Registration
+DEVICE_SECRETS=[{"device_id":"reader-lobby-01","secret":"your-device-secret"}]
+
+# Device JWT Settings
+DEVICE_JWT_SECRET=your-device-jwt-secret-key
+DEVICE_JWT_EXPIRES_IN=365d
+
+# Credential (Card JWT) Settings
+CREDENTIAL_EXPIRES_IN=2592000
 
 # CORS
 ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000
@@ -78,23 +85,30 @@ RATE_LIMIT_MAX_REQUESTS=1000
 AUTH_RATE_LIMIT_MAX=50
 ```
 
-### Lưu ý về FIREBASE_SERVICE_ACCOUNT
+### Lưu ý quan trọng
 
-Có 2 cách cấu hình:
+**FIREBASE_SERVICE_ACCOUNT**: Có 2 cách cấu hình:
 
-**Cách 1: JSON string (recommended)**
 ```env
-FIREBASE_SERVICE_ACCOUNT={"type":"service_account","project_id":"..."}
+# Cách 1: JSON string (recommended)
+FIREBASE_SERVICE_ACCOUNT={"type":"service_account",...}
+
+# Cách 2: Đường dẫn file
+FIREBASE_SERVICE_ACCOUNT_PATH=./serviceAccountKey.json
 ```
 
-**Cách 2: Đường dẫn file**
+**DEVICE_SECRETS**: Mỗi ESP32 cần 1 device_id và secret để đăng ký:
+
 ```env
-FIREBASE_SERVICE_ACCOUNT_PATH=./serviceAccountKey.json
+DEVICE_SECRETS=[
+  {"device_id":"reader-lobby-01","secret":"secret-1"},
+  {"device_id":"reader-door-a1","secret":"secret-2"}
+]
 ```
 
 ## Bước 4: Cấu hình Firebase Rules
 
-Vào **Realtime Database** > **Rules**, set rules:
+Vào **Realtime Database** > **Rules**:
 
 ```json
 {
@@ -103,7 +117,11 @@ Vào **Realtime Database** > **Rules**, set rules:
       ".read": "auth != null",
       ".write": "auth != null"
     },
-    "doors": {
+    "cards": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "devices": {
       ".read": "auth != null",
       ".write": "auth != null"
     },
@@ -111,7 +129,7 @@ Vào **Realtime Database** > **Rules**, set rules:
       ".read": "auth != null",
       ".write": "auth != null"
     },
-    "admins": {
+    "doors": {
       ".read": "auth != null",
       ".write": "auth != null"
     }
@@ -119,7 +137,7 @@ Vào **Realtime Database** > **Rules**, set rules:
 }
 ```
 
-> **Lưu ý**: Backend sử dụng Admin SDK nên bypass rules. Rules trên chỉ áp dụng cho client-side access.
+> **Lưu ý**: Backend sử dụng Admin SDK nên bypass rules.
 
 ## Bước 5: Khởi chạy
 
@@ -142,23 +160,64 @@ npm start
 ### Health check
 
 ```bash
-curl http://localhost:3001/api/health
+curl http://localhost:3001/api/v1/health
 ```
 
-### Đăng ký user
+### Đăng ký device (ESP32)
 
 ```bash
-curl -X POST http://localhost:3001/api/auth/register \
+curl -X POST http://localhost:3001/api/v1/device/register \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@test.com","password":"123456","displayName":"Admin"}'
+  -d '{
+    "device_id": "reader-lobby-01",
+    "secret": "esp32-lobby-secret-2024",
+    "hardware_type": "esp32-pn532",
+    "firmware_version": "1.0.0",
+    "door_id": "door-A1"
+  }'
 ```
 
-### Đăng nhập
+Response:
+```json
+{
+  "success": true,
+  "data": {
+    "device_token": "eyJhbGciOiJIUzI1NiIs...",
+    "config": {
+      "relay_open_ms": 3000,
+      "offline_mode": {
+        "enabled": true,
+        "cache_ttl_sec": 86400
+      }
+    }
+  }
+}
+```
+
+### Tạo card từ thẻ trắng
 
 ```bash
-curl -X POST http://localhost:3001/api/auth/login \
+curl -X POST http://localhost:3001/api/v1/cards \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@test.com","password":"123456"}'
+  -d '{
+    "device_id": "reader-lobby-01",
+    "card_uid": "04AABBCCDD1122"
+  }'
+```
+
+### Kiểm tra quyền truy cập
+
+```bash
+curl -X POST http://localhost:3001/api/v1/access/check \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <device_token>" \
+  -d '{
+    "device_id": "reader-lobby-01",
+    "door_id": "door-A1",
+    "card_id": "c_8f2c1c3e",
+    "card_uid": "04AABBCCDD1122",
+    "timestamp": "2025-12-11T02:30:00Z"
+  }'
 ```
 
 ## Cấu hình ESP32
@@ -166,12 +225,18 @@ curl -X POST http://localhost:3001/api/auth/login \
 ESP32 cần được cấu hình với:
 
 ```cpp
-#define API_URL "http://your-server-ip:3001/api"
-#define API_KEY "esp32-door-main-secret-key-2024"
-#define DEVICE_ID "door_main"
+// config.h
+#define API_URL "http://your-server-ip:3001/api/v1"
+#define DEVICE_ID "reader-lobby-01"
+#define DEVICE_SECRET "esp32-lobby-secret-2024"
+#define DOOR_ID "door-A1"
 ```
 
-Xem thêm tại [ESP32 Setup Guide](../esp32/README.md)
+Flow trên ESP32:
+1. Khởi động → Gọi `/device/register` → Lưu device_token
+2. Định kỳ gọi `/device/config` để lấy public key cho offline mode
+3. Khi quẹt thẻ → Gọi `/access/check`
+4. Nếu ALLOW → Mở cửa + ghi credential mới lên thẻ
 
 ## Troubleshooting
 
@@ -180,9 +245,14 @@ Xem thêm tại [ESP32 Setup Guide](../esp32/README.md)
 - Kiểm tra `FIREBASE_SERVICE_ACCOUNT` đúng format JSON
 - Kiểm tra `FIREBASE_DATABASE_URL` đúng URL
 
-### Lỗi JWT
+### Lỗi Device Registration (401)
 
-- Đảm bảo `JWT_SECRET` được set
+- Kiểm tra `device_id` và `secret` trong `DEVICE_SECRETS`
+- Secret phải khớp chính xác
+
+### Lỗi JWT verification
+
+- Kiểm tra `JWT_SECRET` và `DEVICE_JWT_SECRET`
 - Check token có hết hạn không
 
 ### Lỗi CORS
@@ -207,22 +277,41 @@ pm2 start src/server.js --name nfc-backend
 # Auto-start on reboot
 pm2 startup
 pm2 save
+
+# View logs
+pm2 logs nfc-backend
 ```
 
-### Sử dụng Docker
-
-```bash
-# Build image
-docker build -t nfc-backend .
-
-# Run container
-docker run -d -p 3001:3001 --env-file .env nfc-backend
-```
-
-### Environment variables cho Production
+### Environment Production
 
 ```env
 NODE_ENV=production
 JWT_SECRET=very-long-random-string-for-production
+DEVICE_JWT_SECRET=another-long-random-string
 RATE_LIMIT_MAX_REQUESTS=100
+```
+
+### Nginx Reverse Proxy
+
+```nginx
+server {
+    listen 80;
+    server_name api.your-domain.com;
+
+    location / {
+        proxy_pass http://localhost:3001;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+### SSL với Certbot
+
+```bash
+sudo certbot --nginx -d api.your-domain.com
 ```

@@ -4,7 +4,9 @@ const Joi = require('joi');
  * Validation schemas for request data
  */
 
-// Auth schemas
+// =====================
+// Auth schemas (Frontend)
+// =====================
 const loginSchema = Joi.object({
   email: Joi.string().email().required().messages({
     'string.email': 'Email không hợp lệ',
@@ -32,7 +34,9 @@ const registerSchema = Joi.object({
   })
 });
 
-// User schemas
+// =====================
+// User schemas (Admin)
+// =====================
 const createUserSchema = Joi.object({
   name: Joi.string().min(2).max(100).required().messages({
     'string.min': 'Tên phải có ít nhất 2 ký tự',
@@ -71,7 +75,120 @@ const updateUserSchema = Joi.object({
   })
 });
 
-// Access schemas
+// =====================
+// Device schemas (ESP32)
+// =====================
+const deviceRegisterSchema = Joi.object({
+  device_id: Joi.string().required().messages({
+    'any.required': 'Device ID là bắt buộc'
+  }),
+  secret: Joi.string().required().messages({
+    'any.required': 'Secret là bắt buộc'
+  }),
+  hardware_type: Joi.string().required().messages({
+    'any.required': 'Hardware type là bắt buộc'
+  }),
+  firmware_version: Joi.string().optional(),
+  door_id: Joi.string().required().messages({
+    'any.required': 'Door ID là bắt buộc'
+  })
+});
+
+const deviceHeartbeatSchema = Joi.object({
+  device_id: Joi.string().required(),
+  timestamp: Joi.string().isoDate().required(),
+  status: Joi.object({
+    uptime_sec: Joi.number().integer().optional(),
+    rssi: Joi.number().integer().optional(),
+    fw_version: Joi.string().optional(),
+    last_access_ts: Joi.string().isoDate().optional()
+  }).optional()
+});
+
+const deviceConfigUpdateSchema = Joi.object({
+  relay_open_ms: Joi.number().integer().min(500).max(10000).optional(),
+  offline_mode: Joi.object({
+    enabled: Joi.boolean().optional(),
+    cache_ttl_sec: Joi.number().integer().min(3600).max(604800).optional()
+  }).optional()
+});
+
+// =====================
+// Card schemas
+// =====================
+const cardCreateSchema = Joi.object({
+  device_id: Joi.string().required().messages({
+    'any.required': 'Device ID là bắt buộc'
+  }),
+  card_uid: Joi.string().required().messages({
+    'any.required': 'Card UID là bắt buộc'
+  })
+});
+
+const cardUpdateSchema = Joi.object({
+  status: Joi.string().valid('active', 'inactive', 'revoked').optional(),
+  scope: Joi.array().items(Joi.string()).optional(),
+  offline_enabled: Joi.boolean().optional(),
+  policy: Joi.object({
+    access_level: Joi.string().valid('staff', 'manager', 'admin', 'guest').optional(),
+    valid_until: Joi.string().isoDate().allow(null).optional(),
+    allowed_doors: Joi.array().items(Joi.string()).optional()
+  }).optional()
+});
+
+const cardAssignSchema = Joi.object({
+  user_id: Joi.string().required().messages({
+    'any.required': 'User ID là bắt buộc'
+  }),
+  policy: Joi.object({
+    access_level: Joi.string().valid('staff', 'manager', 'admin', 'guest').default('staff'),
+    valid_until: Joi.string().isoDate().allow(null).optional(),
+    allowed_doors: Joi.array().items(Joi.string()).default(['*'])
+  }).optional()
+});
+
+// =====================
+// Access schemas (ESP32)
+// =====================
+const accessCheckSchema = Joi.object({
+  device_id: Joi.string().required().messages({
+    'any.required': 'Device ID là bắt buộc'
+  }),
+  door_id: Joi.string().required().messages({
+    'any.required': 'Door ID là bắt buộc'
+  }),
+  card_id: Joi.string().allow(null).optional(),
+  card_uid: Joi.string().allow(null).optional(),
+  credential: Joi.object({
+    raw: Joi.string().required(),
+    format: Joi.string().valid('jwt', 'custom').default('jwt')
+  }).allow(null).optional(),
+  timestamp: Joi.string().isoDate().required().messages({
+    'any.required': 'Timestamp là bắt buộc'
+  })
+});
+
+const logEntrySchema = Joi.object({
+  ts: Joi.string().isoDate().required(),
+  door_id: Joi.string().required(),
+  card_id: Joi.string().allow(null).optional(),
+  card_uid: Joi.string().allow(null).optional(),
+  decision: Joi.string().valid('ALLOW', 'DENY').required(),
+  reason: Joi.string().optional()
+});
+
+const logBatchSchema = Joi.object({
+  device_id: Joi.string().required().messages({
+    'any.required': 'Device ID là bắt buộc'
+  }),
+  logs: Joi.array().items(logEntrySchema).required().messages({
+    'any.required': 'Logs là bắt buộc'
+  })
+});
+
+// =====================
+// Legacy schemas
+// =====================
 const verifyAccessSchema = Joi.object({
   cardUid: Joi.string().alphanum().min(4).max(20).required().messages({
     'string.alphanum': 'Card UID chỉ chứa chữ và số',
@@ -98,7 +215,7 @@ const doorStatusSchema = Joi.object({
   isOnline: Joi.boolean().default(true)
 });
 
-// Query schemas - use string().allow('') for query params since they come as strings
+// Query schemas
 const paginationSchema = Joi.object({
   page: Joi.alternatives().try(
     Joi.number().integer().min(1),
@@ -127,19 +244,40 @@ const accessLogsQuerySchema = Joi.object({
     Joi.number(),
     Joi.string().pattern(/^\d+$/).empty('')
   ).optional(),
-  result: Joi.string().valid('granted', 'denied').optional(),
+  result: Joi.string().valid('granted', 'denied', 'ALLOW', 'DENY').optional(),
   doorId: Joi.string().optional(),
   userId: Joi.string().optional()
 });
 
 module.exports = {
+  // Auth
   loginSchema,
   registerSchema,
+
+  // User
   createUserSchema,
   updateUserSchema,
-  verifyAccessSchema,
+
+  // Device (ESP32)
+  deviceRegisterSchema,
+  deviceHeartbeatSchema,
+  deviceConfigUpdateSchema,
+
+  // Card
+  cardCreateSchema,
+  cardUpdateSchema,
+  cardAssignSchema,
+
+  // Access
+  accessCheckSchema,
+  logBatchSchema,
+  verifyAccessSchema, // Legacy
+
+  // Door
   doorCommandSchema,
   doorStatusSchema,
+
+  // Query
   paginationSchema,
   accessLogsQuerySchema
 };
