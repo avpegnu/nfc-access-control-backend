@@ -68,6 +68,43 @@ class FirebaseService {
   }
 
   /**
+   * Get all items from a collection as array
+   */
+  async getAll(path) {
+    const data = await this.get(path);
+    if (!data) return [];
+    return Object.entries(data).map(([id, item]) => ({
+      id,
+      ...item
+    }));
+  }
+
+  /**
+   * Get item by ID from a collection
+   */
+  async getById(path, id) {
+    const data = await this.get(`${path}/${id}`);
+    if (!data) return null;
+    return { id, ...data };
+  }
+
+  /**
+   * Create item with specific ID
+   */
+  async createWithId(path, id, data) {
+    await this.set(`${path}/${id}`, data);
+    return { id, ...data };
+  }
+
+  /**
+   * Delete item by ID
+   */
+  async delete(path, id) {
+    await this.remove(`${path}/${id}`);
+    return true;
+  }
+
+  /**
    * Get data with ordering and limiting
    */
   async query(path, options = {}) {

@@ -274,6 +274,46 @@ class AccessService {
   }
 
   /**
+   * Get timestamp from log (supports multiple formats)
+   */
+  getLogTimestamp(log) {
+    if (log.ts) return new Date(log.ts).getTime();
+    if (log.timestamp) return typeof log.timestamp === 'number' ? log.timestamp : new Date(log.timestamp).getTime();
+    return 0;
+  }
+
+  /**
+   * Get result from log (normalize to granted/denied for frontend)
+   */
+  getLogResult(log) {
+    if (log.decision === 'ALLOW') return 'granted';
+    if (log.decision === 'DENY') return 'denied';
+    if (log.action === 'access_granted') return 'granted';
+    if (log.action === 'access_denied') return 'denied';
+    return log.result || 'denied';
+  }
+
+  /**
+   * Transform log to frontend format
+   */
+  transformLog(log) {
+    return {
+      id: log.id,
+      timestamp: this.getLogTimestamp(log),
+      cardUid: log.card_uid || log.cardUid || '',
+      userId: log.user_id || log.userId || null,
+      userName: log.user_name || log.userName || null,
+      result: this.getLogResult(log),
+      action: log.action_type || 'entry',
+      doorId: log.door_id || log.doorId || 'door_main',
+      doorName: log.door_name || log.doorName || 'Cửa chính',
+      reason: log.reason || null,
+      deviceId: log.device_id || log.deviceId || null,
+      method: log.method || 'online'
+    };
+  }
+
+  /**
    * Get access logs with pagination and filters
    */
   async getLogs(options = {}) {
@@ -300,36 +340,41 @@ class AccessService {
 
     // Apply filters
     if (startDate) {
-      const start = new Date(startDate).toISOString();
-      logs = logs.filter(log => log.ts >= start);
+      const startTs = new Date(startDate).getTime();
+      logs = logs.filter(log => this.getLogTimestamp(log) >= startTs);
     }
 
     if (endDate) {
-      const end = new Date(endDate).toISOString();
-      logs = logs.filter(log => log.ts <= end);
+      const endTs = new Date(endDate).getTime();
+      logs = logs.filter(log => this.getLogTimestamp(log) <= endTs);
     }
 
     if (result) {
-      logs = logs.filter(log => log.decision === result);
+      logs = logs.filter(log => {
+        const logResult = this.getLogResult(log);
+        return (result === 'ALLOW' && logResult === 'granted') ||
+               (result === 'DENY' && logResult === 'denied') ||
+               logResult === result;
+      });
     }
 
     if (doorId) {
-      logs = logs.filter(log => log.door_id === doorId);
+      logs = logs.filter(log => (log.door_id || log.doorId) === doorId);
     }
 
     if (userId) {
-      logs = logs.filter(log => log.user_id === userId);
+      logs = logs.filter(log => (log.user_id || log.userId) === userId);
     }
 
     // Sort by timestamp descending
-    logs.sort((a, b) => new Date(b.ts) - new Date(a.ts));
+    logs.sort((a, b) => this.getLogTimestamp(b) - this.getLogTimestamp(a));
 
     const total = logs.length;
     const startIndex = (page - 1) * limit;
     const paginatedLogs = logs.slice(startIndex, startIndex + limit);
 
     return {
-      logs: paginatedLogs,
+      logs: paginatedLogs.map(log => this.transformLog(log)),
       total
     };
   }
@@ -358,10 +403,11 @@ class AccessService {
     const { logs } = await this.getLogs({ startDate: new Date(startDate), limit: 10000 });
 
     const totalAccess = logs.length;
-    const granted = logs.filter(l => l.decision === 'ALLOW').length;
-    const denied = logs.filter(l => l.decision === 'DENY').length;
+    // logs are already transformed, use frontend field names
+    const granted = logs.filter(l => l.result === 'granted').length;
+    const denied = logs.filter(l => l.result === 'denied').length;
 
-    const uniqueUserIds = new Set(logs.filter(l => l.user_id).map(l => l.user_id));
+    const uniqueUserIds = new Set(logs.filter(l => l.userId).map(l => l.userId));
     const uniqueUsers = uniqueUserIds.size;
 
     const hourlyDistribution = [];
@@ -370,8 +416,7 @@ class AccessService {
         const hourStart = new Date().setHours(hour, 0, 0, 0);
         const hourEnd = new Date().setHours(hour, 59, 59, 999);
         const count = logs.filter(l => {
-          const ts = new Date(l.ts).getTime();
-          return ts >= hourStart && ts <= hourEnd;
+          return l.timestamp >= hourStart && l.timestamp <= hourEnd;
         }).length;
         hourlyDistribution.push({ hour, count });
       }
@@ -379,10 +424,10 @@ class AccessService {
 
     const recentActivity = logs.slice(0, 10).map(log => ({
       id: log.id,
-      timestamp: log.ts,
-      userName: log.user_name || 'Không xác định',
-      result: log.decision,
-      doorId: log.door_id
+      timestamp: log.timestamp,
+      userName: log.userName || 'Không xác định',
+      result: log.result,
+      doorId: log.doorId
     }));
 
     return {

@@ -4,6 +4,14 @@ const firebaseService = require('./firebase.service');
 const CARDS_PATH = 'cards';
 
 /**
+ * Helper: Find card by field value
+ */
+const findCardByField = async (field, value) => {
+  const allCards = await firebaseService.getAll(CARDS_PATH);
+  return allCards.filter(card => card[field] === value);
+};
+
+/**
  * Create a new card from blank NFC card (first tap)
  * Card will be in enroll_mode until admin assigns user/policy
  */
@@ -11,9 +19,7 @@ const createCard = async (data) => {
   const { device_id, card_uid } = data;
 
   // Check if card_uid already exists
-  const existingCards = await firebaseService.query(CARDS_PATH, [
-    { field: 'card_uid', operator: '==', value: card_uid }
-  ]);
+  const existingCards = await findCardByField('card_uid', card_uid);
 
   if (existingCards.length > 0) {
     throw {
@@ -62,9 +68,7 @@ const getCardById = async (cardId) => {
  * Get card by card_uid
  */
 const getCardByUid = async (cardUid) => {
-  const cards = await firebaseService.query(CARDS_PATH, [
-    { field: 'card_uid', operator: '==', value: cardUid }
-  ]);
+  const cards = await findCardByField('card_uid', cardUid);
 
   if (cards.length === 0) {
     return null;
@@ -93,9 +97,9 @@ const updateCard = async (cardId, data) => {
     updateData.enroll_mode = false;
   }
 
-  const updatedCard = await firebaseService.update(CARDS_PATH, cardId, updateData);
+  await firebaseService.update(`${CARDS_PATH}/${cardId}`, updateData);
 
-  return updatedCard;
+  return { ...card, ...updateData };
 };
 
 /**
@@ -116,6 +120,7 @@ const assignUserToCard = async (cardId, userId, policy = {}) => {
 
   const updateData = {
     user_id: userId,
+    user_name: user.name,
     enroll_mode: false,
     policy: {
       access_level: policy.access_level || 'staff',
@@ -127,9 +132,9 @@ const assignUserToCard = async (cardId, userId, policy = {}) => {
     updated_at: new Date().toISOString()
   };
 
-  const updatedCard = await firebaseService.update(CARDS_PATH, cardId, updateData);
+  await firebaseService.update(`${CARDS_PATH}/${cardId}`, updateData);
 
-  return updatedCard;
+  return { ...card, ...updateData };
 };
 
 /**
@@ -149,34 +154,31 @@ const revokeCard = async (cardId, reason = 'revoked') => {
     updated_at: new Date().toISOString()
   };
 
-  const updatedCard = await firebaseService.update(CARDS_PATH, cardId, updateData);
+  await firebaseService.update(`${CARDS_PATH}/${cardId}`, updateData);
 
-  return updatedCard;
+  return { ...card, ...updateData };
 };
 
 /**
  * List all cards with optional filters
  */
 const listCards = async (filters = {}) => {
-  let queryConditions = [];
+  let cards = await firebaseService.getAll(CARDS_PATH);
 
+  // Apply filters
   if (filters.status) {
-    queryConditions.push({ field: 'status', operator: '==', value: filters.status });
+    cards = cards.filter(card => card.status === filters.status);
   }
 
   if (filters.enroll_mode !== undefined) {
-    queryConditions.push({ field: 'enroll_mode', operator: '==', value: filters.enroll_mode });
+    cards = cards.filter(card => card.enroll_mode === filters.enroll_mode);
   }
 
   if (filters.user_id) {
-    queryConditions.push({ field: 'user_id', operator: '==', value: filters.user_id });
+    cards = cards.filter(card => card.user_id === filters.user_id);
   }
 
-  if (queryConditions.length > 0) {
-    return firebaseService.query(CARDS_PATH, queryConditions);
-  }
-
-  return firebaseService.getAll(CARDS_PATH);
+  return cards;
 };
 
 /**

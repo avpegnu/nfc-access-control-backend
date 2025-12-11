@@ -23,13 +23,15 @@ const registerDevice = async (data) => {
 
   if (device) {
     // Update existing device
-    device = await firebaseService.update(DEVICES_PATH, device_id, {
+    const updateData = {
       hardware_type,
       firmware_version,
       door_id,
       last_registered_at: new Date().toISOString(),
       status: 'active'
-    });
+    };
+    await firebaseService.update(`${DEVICES_PATH}/${device_id}`, updateData);
+    device = { ...device, ...updateData };
   } else {
     // Create new device
     device = await firebaseService.createWithId(DEVICES_PATH, device_id, {
@@ -85,10 +87,8 @@ const getDeviceConfig = async (deviceId) => {
   }
 
   // Get offline whitelist (cards that can be verified offline)
-  const cards = await firebaseService.query('cards', [
-    { field: 'offline_enabled', operator: '==', value: true },
-    { field: 'status', operator: '==', value: 'active' }
-  ]);
+  const allCards = await firebaseService.getAll('cards');
+  const cards = allCards.filter(card => card.offline_enabled === true && card.status === 'active');
 
   const offlineWhitelist = cards.map(card => ({
     card_id: card.card_id,
@@ -125,7 +125,7 @@ const processHeartbeat = async (deviceId, data) => {
   }
 
   // Update device status
-  await firebaseService.update(DEVICES_PATH, deviceId, {
+  await firebaseService.update(`${DEVICES_PATH}/${deviceId}`, {
     last_heartbeat_at: timestamp,
     last_status: status,
     online: true
@@ -162,7 +162,7 @@ const updateDeviceConfig = async (deviceId, config) => {
     ...config
   };
 
-  await firebaseService.update(DEVICES_PATH, deviceId, { config: updatedConfig });
+  await firebaseService.update(`${DEVICES_PATH}/${deviceId}`, { config: updatedConfig });
 
   return updatedConfig;
 };
