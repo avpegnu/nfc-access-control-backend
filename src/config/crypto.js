@@ -101,20 +101,18 @@ const getKeyId = () => {
  * Sign data with EdDSA (Ed25519)
  */
 const signEdDSA = (data) => {
-  const key = getPrivateKey();
-  const sign = crypto.createSign('Ed25519');
-  sign.update(data);
-  return sign.sign(key, 'base64url');
+  const key = crypto.createPrivateKey(getPrivateKey());
+  const signature = crypto.sign(null, Buffer.from(data), key);
+  return signature.toString('base64url');
 };
 
 /**
  * Verify EdDSA signature
  */
 const verifyEdDSA = (data, signature) => {
-  const key = getPublicKeyPem();
-  const verify = crypto.createVerify('Ed25519');
-  verify.update(data);
-  return verify.verify(key, signature, 'base64url');
+  const key = crypto.createPublicKey(getPublicKeyPem());
+  const signatureBuffer = Buffer.from(signature, 'base64url');
+  return crypto.verify(null, Buffer.from(data), key, signatureBuffer);
 };
 
 /**
