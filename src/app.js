@@ -6,16 +6,7 @@ const { ALLOWED_ORIGINS } = require('./config/env');
 const { apiLimiter } = require('./middleware/rateLimiter');
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 const logger = require('./utils/logger');
-
-// Import legacy routes (for Frontend)
-const authRoutes = require('./routes/auth.routes');
-const usersRoutes = require('./routes/users.routes');
-const doorsRoutes = require('./routes/doors.routes');
-const accessRoutes = require('./routes/access.routes');
-const realtimeRoutes = require('./routes/realtime.routes');
-
-// Import API v1 routes (for ESP32)
-const v1Routes = require('./routes/v1');
+const routes = require('./routes');
 
 // Create Express app
 const app = express();
@@ -64,47 +55,8 @@ app.use((req, res, next) => {
 // Rate limiting (apply to all API routes)
 app.use('/api', apiLimiter);
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({
-    success: true,
-    data: {
-      status: 'healthy',
-      timestamp: Date.now(),
-      uptime: process.uptime()
-    }
-  });
-});
-
-// =====================
-// API v1 routes (ESP32)
-// =====================
-app.use('/api/v1', v1Routes);
-
-// =====================
-// Legacy API routes (Frontend)
-// =====================
-app.use('/api/auth', authRoutes);
-app.use('/api/users', usersRoutes);
-app.use('/api/doors', doorsRoutes);
-app.use('/api/access', accessRoutes);
-app.use('/api/realtime', realtimeRoutes);
-
-// Root endpoint
-app.get('/', (req, res) => {
-  res.json({
-    success: true,
-    data: {
-      name: 'NFC Access Control API',
-      version: '1.4.0',
-      endpoints: {
-        v1: '/api/v1 (ESP32)',
-        legacy: '/api (Frontend)'
-      },
-      documentation: '/api/v1/health'
-    }
-  });
-});
+// API routes
+app.use('/api', routes);
 
 // 404 handler
 app.use(notFoundHandler);

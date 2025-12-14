@@ -62,7 +62,7 @@ class AccessService {
         if (user && !user.isActive) {
           result = 'DENY';
           reason = 'USER_INACTIVE';
-          await this.logAccess({ door_id, card_id: card.card_id, card_uid, result, reason, user_id: card.user_id, device_id });
+          await this.logAccess({ door_id, card_id: card.card_id, card_uid, result, reason, user_id: card.user_id, user_name: user?.name || user?.displayName || null, device_id });
           return { result, reason };
         }
       }
@@ -76,7 +76,7 @@ class AccessService {
         if (Date.now() > validUntil) {
           result = 'DENY';
           reason = 'POLICY_EXPIRED';
-          await this.logAccess({ door_id, card_id: card.card_id, card_uid, result, reason, user_id: card.user_id, device_id });
+          await this.logAccess({ door_id, card_id: card.card_id, card_uid, result, reason, user_id: card.user_id, user_name: user?.name || user?.displayName || null, device_id });
           return { result, reason };
         }
       }
@@ -85,7 +85,7 @@ class AccessService {
       if (policy.allowed_doors && !policy.allowed_doors.includes('*') && !policy.allowed_doors.includes(door_id)) {
         result = 'DENY';
         reason = 'DOOR_NOT_ALLOWED';
-        await this.logAccess({ door_id, card_id: card.card_id, card_uid, result, reason, user_id: card.user_id, device_id });
+        await this.logAccess({ door_id, card_id: card.card_id, card_uid, result, reason, user_id: card.user_id, user_name: user?.name || user?.displayName || null, device_id });
         return { result, reason };
       }
 
@@ -114,6 +114,7 @@ class AccessService {
           result,
           reason,
           user_id: card.user_id,
+          user_name: user?.name || user?.displayName || null,
           device_id,
           credential_issued: true
         });
@@ -142,6 +143,7 @@ class AccessService {
             result,
             reason,
             user_id: card.user_id,
+            user_name: user?.name || user?.displayName || null,
             device_id,
             error: verifyResult.error
           });
@@ -160,6 +162,7 @@ class AccessService {
           result,
           reason,
           user_id: card.user_id,
+          user_name: user?.name || user?.displayName || null,
           device_id,
           credential_rotated: true
         });
@@ -188,6 +191,7 @@ class AccessService {
           result,
           reason,
           user_id: card.user_id,
+          user_name: user?.name || user?.displayName || null,
           device_id,
           credential_issued: true
         });
@@ -233,6 +237,7 @@ class AccessService {
       card_id: data.card_id || null,
       card_uid: data.card_uid || null,
       user_id: data.user_id || null,
+      user_name: data.user_name || null,
       device_id: data.device_id || null,
       decision: data.result,
       reason: data.reason,
