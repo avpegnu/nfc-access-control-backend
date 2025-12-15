@@ -66,6 +66,13 @@ router.post(
   cardController.revokeCard
 );
 
+// POST /cards/:cardId/reactivate - Reactivate revoked card (Admin)
+router.post(
+  '/:cardId/reactivate',
+  authMiddleware,
+  cardController.reactivateCard
+);
+
 // DELETE /cards/:cardId - Delete card (Admin)
 router.delete(
   '/:cardId',

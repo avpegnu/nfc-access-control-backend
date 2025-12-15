@@ -91,6 +91,19 @@ const revokeCard = async (req, res) => {
 };
 
 /**
+ * POST /cards/:cardId/reactivate
+ * Reactivate a revoked card (Admin)
+ */
+const reactivateCard = async (req, res) => {
+  try {
+    const card = await cardService.reactivateCard(req.params.cardId);
+    return success(res, card, 'Kích hoạt lại thẻ thành công');
+  } catch (err) {
+    return error(res, err.code || 'REACTIVATE_CARD_ERROR', err.message, err.status || 500);
+  }
+};
+
+/**
  * DELETE /cards/:cardId
  * Delete card (Admin)
  */
@@ -110,5 +123,6 @@ module.exports = {
   updateCard,
   assignUser,
   revokeCard,
+  reactivateCard,
   deleteCard
 };

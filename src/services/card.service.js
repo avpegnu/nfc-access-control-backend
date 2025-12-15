@@ -160,6 +160,31 @@ const revokeCard = async (cardId, reason = 'revoked') => {
 };
 
 /**
+ * Reactivate a revoked card - Admin only
+ */
+const reactivateCard = async (cardId) => {
+  const card = await firebaseService.getById(CARDS_PATH, cardId);
+
+  if (!card) {
+    throw { code: 'CARD_NOT_FOUND', message: 'Thẻ không tồn tại', status: 404 };
+  }
+
+  if (card.status !== 'revoked') {
+    throw { code: 'CARD_NOT_REVOKED', message: 'Thẻ không ở trạng thái bị thu hồi', status: 400 };
+  }
+
+  const updateData = {
+    status: 'active',
+    reactivated_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  };
+
+  await firebaseService.update(`${CARDS_PATH}/${cardId}`, updateData);
+
+  return { ...card, ...updateData };
+};
+
+/**
  * List all cards with optional filters
  */
 const listCards = async (filters = {}) => {
@@ -203,6 +228,7 @@ module.exports = {
   updateCard,
   assignUserToCard,
   revokeCard,
+  reactivateCard,
   listCards,
   deleteCard
 };
