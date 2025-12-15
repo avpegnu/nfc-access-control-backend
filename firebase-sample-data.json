@@ -43,12 +43,15 @@
   },
   "cards": {
     "card_001": {
+      "card_id": "card_001",
       "card_uid": "04:A1:B2:C3:D4:E5:F6",
       "status": "active",
+      "enroll_mode": false,
       "user_id": "user_001",
       "user_name": "Nguyễn Văn An",
       "policy": {
-        "doors": ["door_main"],
+        "access_level": "staff",
+        "allowed_doors": ["door_main"],
         "time_restrictions": null
       },
       "credential_version": 3,
@@ -58,12 +61,15 @@
       "updated_at": 1702350000000
     },
     "card_002": {
+      "card_id": "card_002",
       "card_uid": "04:B2:C3:D4:E5:F6:A1",
       "status": "active",
+      "enroll_mode": false,
       "user_id": "user_002",
       "user_name": "Trần Thị Bình",
       "policy": {
-        "doors": ["door_main", "door_back"],
+        "access_level": "manager",
+        "allowed_doors": ["door_main", "door_back"],
         "time_restrictions": {
           "start": "08:00",
           "end": "18:00",
@@ -77,8 +83,10 @@
       "updated_at": 1702360000000
     },
     "card_003": {
+      "card_id": "card_003",
       "card_uid": "04:C3:D4:E5:F6:A1:B2",
-      "status": "pending",
+      "status": "active",
+      "enroll_mode": true,
       "user_id": null,
       "user_name": null,
       "policy": {},
@@ -89,8 +97,10 @@
       "updated_at": 1702400000000
     },
     "card_004": {
+      "card_id": "card_004",
       "card_uid": "04:D4:E5:F6:A1:B2:C3",
-      "status": "pending",
+      "status": "active",
+      "enroll_mode": true,
       "user_id": null,
       "user_name": null,
       "policy": {},
@@ -101,8 +111,10 @@
       "updated_at": 1702400100000
     },
     "card_005": {
+      "card_id": "card_005",
       "card_uid": "04:E5:F6:A1:B2:C3:D4",
       "status": "revoked",
+      "enroll_mode": false,
       "user_id": "user_004",
       "user_name": "Phạm Thị Dung",
       "policy": {
