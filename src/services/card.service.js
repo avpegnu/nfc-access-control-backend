@@ -21,13 +21,10 @@ const createCard = async (data) => {
   // Check if card_uid already exists
   const existingCards = await findCardByField('card_uid', card_uid);
 
+  // If card exists, return it instead of throwing error
+  // This handles cases where ESP32 failed to write data and retries
   if (existingCards.length > 0) {
-    throw {
-      code: 'CARD_EXISTS',
-      message: 'Card UID đã tồn tại trong hệ thống',
-      status: 409,
-      existing_card: existingCards[0]
-    };
+    return existingCards[0];
   }
 
   // Generate card_id
@@ -38,7 +35,7 @@ const createCard = async (data) => {
     card_uid,
     user_id: null,
     scope: [],
-    status: 'active',
+    status: 'inactive', // Card starts inactive until admin assigns user
     enroll_mode: true,
     enrolled_by_device: device_id,
     offline_enabled: false,
@@ -121,6 +118,7 @@ const assignUserToCard = async (cardId, userId, policy = {}) => {
   const updateData = {
     user_id: userId,
     user_name: user.name,
+    status: 'active', // Activate card when user is assigned
     enroll_mode: false,
     policy: {
       access_level: policy.access_level || 'staff',

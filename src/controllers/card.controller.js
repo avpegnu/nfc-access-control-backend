@@ -10,9 +10,6 @@ const createCard = async (req, res) => {
     const card = await cardService.createCard(req.body);
     return success(res, card, 'Tạo thẻ thành công', 201);
   } catch (err) {
-    if (err.code === 'CARD_EXISTS') {
-      return error(res, err.code, err.message, 409, { existing_card: err.existing_card });
-    }
     return error(res, err.code || 'CREATE_CARD_ERROR', err.message, err.status || 500);
   }
 };

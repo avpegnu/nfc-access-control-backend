@@ -13,9 +13,11 @@ class AccessService {
   /**
    * Check access - main entry point for ESP32
    *
-   * Handles multiple scenarios:
-   * 1. New card with card_id but no credential (second tap after enrollment)
-   * 2. Existing card with credential (normal access)
+   * New flow:
+   * 1. Validate credential FIRST if provided
+   * 2. Use credential payload for access decision (no DB calls if valid & not expired)
+   * 3. Handle enroll_mode separately (simplified)
+   * 4. Deny if no credential provided (no auto-allow)
    */
   async checkAccess(data) {
     const { device_id, door_id, card_id, card_uid, credential, timestamp } = data;
@@ -30,7 +32,7 @@ class AccessService {
     let relayOpenMs = 3000;
 
     try {
-      // Get card by card_id or card_uid
+      // Step 1: Get card by card_id or card_uid
       if (card_id) {
         card = await cardService.getCardById(card_id).catch(() => null);
       }
@@ -39,7 +41,7 @@ class AccessService {
         card = await cardService.getCardByUid(card_uid);
       }
 
-      // Scenario 1: Card not found
+      // Card not found
       if (!card) {
         result = 'DENY';
         reason = 'CARD_NOT_FOUND';
@@ -47,12 +49,133 @@ class AccessService {
         return { result, reason };
       }
 
-      // Scenario 2: Card revoked or inactive
+      // Step 2: Validate credential if provided
+      if (credential && credential.raw) {
+        const verifyResult = credentialService.verifyCredential(credential.raw, card_uid);
+
+        // Credential invalid
+        if (!verifyResult.valid) {
+          result = 'DENY';
+          reason = 'INVALID_CREDENTIAL';
+          await this.logAccess({
+            door_id,
+            card_id: card.card_id,
+            card_uid,
+            result,
+            reason,
+            user_id: card.user_id,
+            device_id,
+            error: verifyResult.error
+          });
+          return { result, reason: verifyResult.error };
+        }
+
+        // Credential valid - check expiration
+        const now = Math.floor(Date.now() / 1000);
+        const payload = verifyResult.payload;
+
+        // Credential not expired - use payload for access decision (NO DATABASE CALLS)
+        if (payload.exp > now) {
+          // Check door access from credential payload
+          if (payload.allowed_doors && !payload.allowed_doors.includes('*') && !payload.allowed_doors.includes(door_id)) {
+            result = 'DENY';
+            reason = 'DOOR_NOT_ALLOWED';
+            await this.logAccess({
+              door_id,
+              card_id: card.card_id,
+              card_uid,
+              result,
+              reason,
+              user_id: payload.user_id,
+              user_name: payload.user_name,
+              device_id
+            });
+            return { result, reason };
+          }
+
+          // Access granted - rotate credential
+          result = 'ALLOW';
+          reason = 'ACCESS_GRANTED';
+          
+          // Get user for credential generation (only if needed)
+          if (card.user_id) {
+            user = await firebaseService.getById('users', card.user_id).catch(() => null);
+          }
+          
+          newCredential = credentialService.generateCredential(card, user);
+
+          await this.logAccess({
+            door_id,
+            card_id: card.card_id,
+            card_uid,
+            result,
+            reason,
+            user_id: payload.user_id,
+            user_name: payload.user_name,
+            device_id,
+            credential_rotated: true
+          });
+
+          return {
+            result,
+            reason,
+            relay_open_ms: relayOpenMs,
+            user: { user_id: payload.user_id, name: payload.user_name },
+            policy: { access_level: payload.access_level, valid_until: null },
+            credential: newCredential
+          };
+        }
+
+        // Credential expired - continue to database validation below
+        logger.info(`Credential expired for card ${card.card_id}, validating against database`);
+      }
+
+      // Step 3: Database validation (for expired credentials or no credential)
+      
+      // Check card status
       if (card.status !== 'active') {
         result = 'DENY';
         reason = 'CARD_REVOKED';
         await this.logAccess({ door_id, card_id: card.card_id, card_uid, result, reason, device_id });
         return { result, reason };
+      }
+
+      // Check enroll_mode (simplified - no credential check needed)
+      if (card.enroll_mode) {
+        // Card is in enroll mode but user not assigned yet
+        if (!card.user_id) {
+          result = 'DENY';
+          reason = 'CARD_NOT_ASSIGNED';
+          await this.logAccess({ door_id, card_id: card.card_id, card_uid, result, reason, device_id });
+          return { result, reason };
+        }
+
+        // User assigned but still in enroll mode - deny but issue credential for writing
+        result = 'DENY';
+        reason = 'ENROLL_MODE';
+        
+        // Get user for credential
+        user = await firebaseService.getById('users', card.user_id).catch(() => null);
+        newCredential = credentialService.generateCredential(card, user);
+
+        await this.logAccess({
+          door_id,
+          card_id: card.card_id,
+          card_uid,
+          result,
+          reason,
+          user_id: card.user_id,
+          user_name: user?.name || user?.displayName || null,
+          device_id,
+          credential_issued: true
+        });
+
+        return {
+          result,
+          reason,
+          user: user ? { user_id: user.id, name: user.name || user.displayName } : null,
+          credential: newCredential
+        };
       }
 
       // Get user if assigned
@@ -89,70 +212,10 @@ class AccessService {
         return { result, reason };
       }
 
-      // Scenario 3: New card in enroll_mode (second tap, no credential yet)
-      if (card.enroll_mode && !credential) {
-        // Card is in enroll mode but user not assigned yet
-        if (!card.user_id) {
-          result = 'DENY';
-          reason = 'CARD_NOT_ASSIGNED';
-          await this.logAccess({ door_id, card_id: card.card_id, card_uid, result, reason, device_id });
-          return { result, reason };
-        }
-
-        // User assigned, issue first credential
-        result = 'ALLOW';
-        reason = 'FIRST_CREDENTIAL_ISSUED';
-        newCredential = credentialService.generateCredential(card, user);
-
-        // Turn off enroll_mode
-        await cardService.updateCard(card.card_id, { enroll_mode: false });
-
-        await this.logAccess({
-          door_id,
-          card_id: card.card_id,
-          card_uid,
-          result,
-          reason,
-          user_id: card.user_id,
-          user_name: user?.name || user?.displayName || null,
-          device_id,
-          credential_issued: true
-        });
-
-        return {
-          result,
-          reason,
-          relay_open_ms: relayOpenMs,
-          user: user ? { user_id: user.id, name: user.name || user.displayName } : null,
-          policy: { access_level: policy.access_level, valid_until: policy.valid_until || null },
-          credential: newCredential
-        };
-      }
-
-      // Scenario 4: Existing card with credential
+      // If we have expired credential, allow and rotate
       if (credential && credential.raw) {
-        const verifyResult = credentialService.verifyCredential(credential.raw, card_uid);
-
-        if (!verifyResult.valid) {
-          result = 'DENY';
-          reason = 'INVALID_CREDENTIAL';
-          await this.logAccess({
-            door_id,
-            card_id: card.card_id,
-            card_uid,
-            result,
-            reason,
-            user_id: card.user_id,
-            user_name: user?.name || user?.displayName || null,
-            device_id,
-            error: verifyResult.error
-          });
-          return { result, reason: verifyResult.error };
-        }
-
-        // Credential valid - allow access and rotate credential
         result = 'ALLOW';
-        reason = 'ACCESS_GRANTED';
+        reason = 'CREDENTIAL_ROTATED';
         newCredential = credentialService.generateCredential(card, user);
 
         await this.logAccess({
@@ -177,39 +240,10 @@ class AccessService {
         };
       }
 
-      // Scenario 5: Card exists but no credential provided (shouldn't happen normally)
-      // Allow with new credential if card is properly set up
-      if (card.user_id && !card.enroll_mode) {
-        result = 'ALLOW';
-        reason = 'CREDENTIAL_MISSING_REISSUED';
-        newCredential = credentialService.generateCredential(card, user);
-
-        await this.logAccess({
-          door_id,
-          card_id: card.card_id,
-          card_uid,
-          result,
-          reason,
-          user_id: card.user_id,
-          user_name: user?.name || user?.displayName || null,
-          device_id,
-          credential_issued: true
-        });
-
-        return {
-          result,
-          reason,
-          relay_open_ms: relayOpenMs,
-          user: user ? { user_id: user.id, name: user.name || user.displayName } : null,
-          policy: { access_level: policy.access_level, valid_until: policy.valid_until || null },
-          credential: newCredential
-        };
-      }
-
-      // Default deny
+      // No credential provided - deny access
       result = 'DENY';
-      reason = 'CARD_NOT_CONFIGURED';
-      await this.logAccess({ door_id, card_id: card.card_id, card_uid, result, reason, device_id });
+      reason = 'CREDENTIAL_REQUIRED';
+      await this.logAccess({ door_id, card_id: card.card_id, card_uid, result, reason, user_id: card.user_id, user_name: user?.name || user?.displayName || null, device_id });
       return { result, reason };
 
     } catch (error) {
