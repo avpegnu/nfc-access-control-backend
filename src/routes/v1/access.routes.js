@@ -11,11 +11,64 @@ const {
 } = require('../../utils/validators');
 
 /**
- * Access Routes (ESP32 & Admin)
- * Base path: /api/v1/access
+ * @swagger
+ * tags:
+ *   name: Access V1
+ *   description: API kiểm tra quyền truy cập (V1)
  */
 
-// POST /access/check - Check card access (ESP32)
+/**
+ * @swagger
+ * /api/v1/access/check:
+ *   post:
+ *     summary: Kiểm tra quyền truy cập thẻ (ESP32)
+ *     description: ESP32 gửi UID thẻ để kiểm tra quyền truy cập
+ *     tags: [Access V1]
+ *     security:
+ *       - DeviceToken: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - device_id
+ *               - door_id
+ *               - timestamp
+ *             properties:
+ *               device_id:
+ *                 type: string
+ *                 example: "esp32_01"
+ *               door_id:
+ *                 type: string
+ *                 example: "door_01"
+ *               cardUid:
+ *                 type: string
+ *                 example: "04:A1:B2:C3:D4:E5:F6"
+ *               timestamp:
+ *                 type: string
+ *                 format: date-time
+ *     responses:
+ *       200:
+ *         description: Kết quả kiểm tra
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     allowed:
+ *                       type: boolean
+ *                     user:
+ *                       $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Token thiết bị không hợp lệ
+ */
 router.post(
   '/check',
   deviceAuthMiddleware,
@@ -24,7 +77,43 @@ router.post(
   accessController.check
 );
 
-// POST /access/log-batch - Sync offline logs (ESP32)
+/**
+ * @swagger
+ * /api/v1/access/log-batch:
+ *   post:
+ *     summary: Đồng bộ log offline (ESP32)
+ *     description: ESP32 gửi batch log khi offline về server
+ *     tags: [Access V1]
+ *     security:
+ *       - DeviceToken: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - logs
+ *             properties:
+ *               logs:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     cardUid:
+ *                       type: string
+ *                     timestamp:
+ *                       type: string
+ *                       format: date-time
+ *                     status:
+ *                       type: string
+ *                       enum: [granted, denied]
+ *     responses:
+ *       200:
+ *         description: Đồng bộ thành công
+ *       401:
+ *         description: Token thiết bị không hợp lệ
+ */
 router.post(
   '/log-batch',
   deviceAuthMiddleware,
@@ -36,21 +125,71 @@ router.post(
  * Admin routes for access management
  */
 
-// GET /access/logs - Get access logs (Admin)
+/**
+ * @swagger
+ * /api/v1/access/logs:
+ *   get:
+ *     summary: Lấy lịch sử truy cập
+ *     tags: [Access V1]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       401:
+ *         description: Chưa đăng nhập
+ */
 router.get(
   '/logs',
   authMiddleware,
   accessController.getLogs
 );
 
-// GET /access/stats - Get access statistics (Admin)
+/**
+ * @swagger
+ * /api/v1/access/stats:
+ *   get:
+ *     summary: Lấy thống kê truy cập
+ *     tags: [Access V1]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       401:
+ *         description: Chưa đăng nhập
+ */
 router.get(
   '/stats',
   authMiddleware,
   accessController.getStats
 );
 
-// GET /access/recent - Get recent access logs (Admin)
+/**
+ * @swagger
+ * /api/v1/access/recent:
+ *   get:
+ *     summary: Lấy các truy cập gần đây
+ *     tags: [Access V1]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       401:
+ *         description: Chưa đăng nhập
+ */
 router.get(
   '/recent',
   authMiddleware,

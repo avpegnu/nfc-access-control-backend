@@ -7,9 +7,35 @@ const { verifyToken, isTokenBlacklisted } = require('../config/jwt');
 const logger = require('../utils/logger');
 
 /**
- * @route   GET /api/realtime/events
- * @desc    Server-Sent Events endpoint for realtime updates
- * @access  Private (token in query param)
+ * @swagger
+ * tags:
+ *   name: Realtime
+ *   description: Server-Sent Events cho cập nhật thời gian thực
+ */
+
+/**
+ * @swagger
+ * /api/realtime/events:
+ *   get:
+ *     summary: Kết nối SSE realtime
+ *     description: Endpoint Server-Sent Events để nhận cập nhật thời gian thực (trạng thái cửa, truy cập mới)
+ *     tags: [Realtime]
+ *     parameters:
+ *       - in: query
+ *         name: token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: JWT token để xác thực
+ *     responses:
+ *       200:
+ *         description: Kết nối SSE thành công
+ *         content:
+ *           text/event-stream:
+ *             schema:
+ *               type: string
+ *       401:
+ *         description: Token không hợp lệ hoặc đã hết hạn
  */
 router.get('/events', (req, res) => {
   // Get token from query param (SSE can't use headers easily)
@@ -80,9 +106,29 @@ router.get('/events', (req, res) => {
 });
 
 /**
- * @route   GET /api/realtime/status
- * @desc    Get realtime service status
- * @access  Private
+ * @swagger
+ * /api/realtime/status:
+ *   get:
+ *     summary: Lấy trạng thái dịch vụ realtime
+ *     description: Trả về số lượng client đang kết nối SSE
+ *     tags: [Realtime]
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     connectedClients:
+ *                       type: integer
+ *                       example: 5
  */
 router.get('/status', (req, res) => {
   res.json({

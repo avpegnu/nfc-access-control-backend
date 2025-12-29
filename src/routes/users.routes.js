@@ -6,13 +6,54 @@ const { authMiddleware } = require('../middleware/auth');
 const { validateBody, validateQuery } = require('../middleware/validation');
 const { createUserSchema, updateUserSchema, paginationSchema } = require('../utils/validators');
 
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: Quản lý người dùng (nhân viên)
+ */
+
 // All routes require authentication
 router.use(authMiddleware);
 
 /**
- * @route   GET /api/users
- * @desc    Get all users
- * @access  Private
+ * @swagger
+ * /api/users:
+ *   get:
+ *     summary: Lấy danh sách người dùng
+ *     description: Trả về danh sách tất cả người dùng với phân trang
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Số trang
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Số lượng mỗi trang
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Chưa đăng nhập
  */
 router.get(
   '/',
@@ -21,9 +62,34 @@ router.get(
 );
 
 /**
- * @route   GET /api/users/:id
- * @desc    Get user by ID
- * @access  Private
+ * @swagger
+ * /api/users/{id}:
+ *   get:
+ *     summary: Lấy thông tin người dùng theo ID
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID người dùng
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   $ref: '#/components/schemas/User'
+ *       404:
+ *         description: Không tìm thấy người dùng
  */
 router.get(
   '/:id',
@@ -31,9 +97,44 @@ router.get(
 );
 
 /**
- * @route   POST /api/users
- * @desc    Create new user
- * @access  Private
+ * @swagger
+ * /api/users:
+ *   post:
+ *     summary: Tạo người dùng mới
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - email
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: Nguyễn Văn A
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: nguyenvana@company.com
+ *               cardUid:
+ *                 type: string
+ *                 example: "ABC123DEF"
+ *               role:
+ *                 type: string
+ *                 enum: [user, admin]
+ *                 default: user
+ *     responses:
+ *       201:
+ *         description: Tạo thành công
+ *       400:
+ *         description: Dữ liệu không hợp lệ
+ *       409:
+ *         description: Email đã tồn tại
  */
 router.post(
   '/',
@@ -42,9 +143,44 @@ router.post(
 );
 
 /**
- * @route   PUT /api/users/:id
- * @desc    Update user
- * @access  Private
+ * @swagger
+ * /api/users/{id}:
+ *   put:
+ *     summary: Cập nhật thông tin người dùng
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID người dùng
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               cardUid:
+ *                 type: string
+ *               role:
+ *                 type: string
+ *                 enum: [user, admin]
+ *     responses:
+ *       200:
+ *         description: Cập nhật thành công
+ *       400:
+ *         description: Dữ liệu không hợp lệ
+ *       404:
+ *         description: Không tìm thấy người dùng
  */
 router.put(
   '/:id',
@@ -53,9 +189,25 @@ router.put(
 );
 
 /**
- * @route   DELETE /api/users/:id
- * @desc    Delete user
- * @access  Private
+ * @swagger
+ * /api/users/{id}:
+ *   delete:
+ *     summary: Xóa người dùng
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID người dùng
+ *     responses:
+ *       200:
+ *         description: Xóa thành công
+ *       404:
+ *         description: Không tìm thấy người dùng
  */
 router.delete(
   '/:id',
@@ -63,9 +215,26 @@ router.delete(
 );
 
 /**
- * @route   PATCH /api/users/:id/toggle
- * @desc    Toggle user active status
- * @access  Private
+ * @swagger
+ * /api/users/{id}/toggle:
+ *   patch:
+ *     summary: Bật/tắt trạng thái người dùng
+ *     description: Chuyển đổi trạng thái active của người dùng
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID người dùng
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       404:
+ *         description: Không tìm thấy người dùng
  */
 router.patch(
   '/:id/toggle',

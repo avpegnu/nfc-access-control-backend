@@ -35,6 +35,7 @@ const startServer = async () => {
   Port: ${PORT}
   URL: http://localhost:${PORT}
   API: http://localhost:${PORT}/api
+  Swagger: http://localhost:${PORT}/api-docs
   Health: http://localhost:${PORT}/health
 ========================================
       `);

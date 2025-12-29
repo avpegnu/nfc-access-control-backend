@@ -12,11 +12,61 @@ const {
 } = require('../../utils/validators');
 
 /**
- * Device Routes (ESP32)
- * Base path: /api/v1/device
+ * @swagger
+ * tags:
+ *   name: Devices
+ *   description: Quản lý thiết bị ESP32
  */
 
-// POST /device/register - Register device (no auth required, uses secret)
+/**
+ * @swagger
+ * /api/v1/device/register:
+ *   post:
+ *     summary: Đăng ký thiết bị mới
+ *     description: ESP32 đăng ký lần đầu với server sử dụng secret key
+ *     tags: [Devices]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - deviceId
+ *               - secret
+ *             properties:
+ *               deviceId:
+ *                 type: string
+ *                 example: "ESP32-001"
+ *               secret:
+ *                 type: string
+ *                 example: "device-secret-key"
+ *               name:
+ *                 type: string
+ *                 example: "Cửa chính"
+ *               location:
+ *                 type: string
+ *                 example: "Tầng 1"
+ *     responses:
+ *       200:
+ *         description: Đăng ký thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     token:
+ *                       type: string
+ *                     device:
+ *                       $ref: '#/components/schemas/Device'
+ *       401:
+ *         description: Secret key không hợp lệ
+ */
 router.post(
   '/register',
   deviceLimiter,
@@ -24,14 +74,54 @@ router.post(
   deviceController.register
 );
 
-// GET /device/config - Get device config (requires device token)
+/**
+ * @swagger
+ * /api/v1/device/config:
+ *   get:
+ *     summary: Lấy cấu hình thiết bị
+ *     description: ESP32 lấy cấu hình từ server
+ *     tags: [Devices]
+ *     security:
+ *       - DeviceToken: []
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       401:
+ *         description: Token không hợp lệ
+ */
 router.get(
   '/config',
   deviceAuthMiddleware,
   deviceController.getConfig
 );
 
-// POST /device/heartbeat - Send heartbeat (requires device token)
+/**
+ * @swagger
+ * /api/v1/device/heartbeat:
+ *   post:
+ *     summary: Gửi heartbeat
+ *     description: ESP32 gửi tín hiệu heartbeat để duy trì kết nối
+ *     tags: [Devices]
+ *     security:
+ *       - DeviceToken: []
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *               freeHeap:
+ *                 type: integer
+ *               uptime:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       401:
+ *         description: Token không hợp lệ
+ */
 router.post(
   '/heartbeat',
   deviceAuthMiddleware,
@@ -43,21 +133,99 @@ router.post(
  * Admin routes for device management
  */
 
-// GET /device/list - List all devices (Admin)
+/**
+ * @swagger
+ * /api/v1/device/list:
+ *   get:
+ *     summary: Lấy danh sách thiết bị
+ *     description: Admin lấy danh sách tất cả thiết bị đã đăng ký
+ *     tags: [Devices]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Device'
+ *       401:
+ *         description: Chưa đăng nhập
+ */
 router.get(
   '/list',
   authMiddleware,
   deviceController.listDevices
 );
 
-// GET /device/:deviceId - Get device details (Admin)
+/**
+ * @swagger
+ * /api/v1/device/{deviceId}:
+ *   get:
+ *     summary: Lấy thông tin thiết bị
+ *     tags: [Devices]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: deviceId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID thiết bị
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       404:
+ *         description: Không tìm thấy thiết bị
+ */
 router.get(
   '/:deviceId',
   authMiddleware,
   deviceController.getDevice
 );
 
-// PUT /device/:deviceId/config - Update device config (Admin)
+/**
+ * @swagger
+ * /api/v1/device/{deviceId}/config:
+ *   put:
+ *     summary: Cập nhật cấu hình thiết bị
+ *     tags: [Devices]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: deviceId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID thiết bị
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               location:
+ *                 type: string
+ *               isActive:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         description: Cập nhật thành công
+ *       404:
+ *         description: Không tìm thấy thiết bị
+ */
 router.put(
   '/:deviceId/config',
   authMiddleware,

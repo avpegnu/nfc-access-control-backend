@@ -29,6 +29,13 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
   : ['http://localhost:5173'];
 
+// Always allow Swagger UI functioning on the same port
+const port = parseInt(process.env.PORT, 10) || 3001;
+const localOrigin = `http://localhost:${port}`;
+if (!allowedOrigins.includes(localOrigin)) {
+  allowedOrigins.push(localOrigin);
+}
+
 module.exports = {
   NODE_ENV: process.env.NODE_ENV || 'development',
   PORT: parseInt(process.env.PORT, 10) || 3001,
