@@ -1,14 +1,11 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const accessController = require('../../controllers/access.controller');
-const { deviceAuthMiddleware } = require('../../middleware/deviceAuth');
-const { authMiddleware } = require('../../middleware/auth');
-const { deviceLimiter } = require('../../middleware/rateLimiter');
-const { validate } = require('../../middleware/validation');
-const {
-  accessCheckSchema,
-  logBatchSchema
-} = require('../../utils/validators');
+const accessController = require("../../controllers/access.controller");
+const { deviceAuthMiddleware } = require("../../middleware/deviceAuth");
+const { authMiddleware } = require("../../middleware/auth");
+const { deviceLimiter } = require("../../middleware/rateLimiter");
+const { validate } = require("../../middleware/validation");
+const { accessCheckSchema, logBatchSchema } = require("../../utils/validators");
 
 /**
  * @swagger
@@ -33,22 +30,17 @@ const {
  *           schema:
  *             type: object
  *             required:
- *               - device_id
- *               - door_id
- *               - timestamp
+ *               - cardUid
+ *               - doorId
  *             properties:
- *               device_id:
- *                 type: string
- *                 example: "esp32_01"
- *               door_id:
- *                 type: string
- *                 example: "door_01"
  *               cardUid:
  *                 type: string
  *                 example: "04:A1:B2:C3:D4:E5:F6"
- *               timestamp:
+ *                 description: UID của thẻ NFC
+ *               doorId:
  *                 type: string
- *                 format: date-time
+ *                 example: "door_main"
+ *                 description: ID cửa đang kiểm tra
  *     responses:
  *       200:
  *         description: Kết quả kiểm tra
@@ -70,7 +62,7 @@ const {
  *         description: Token thiết bị không hợp lệ
  */
 router.post(
-  '/check',
+  "/check",
   deviceAuthMiddleware,
   deviceLimiter,
   validate(accessCheckSchema),
@@ -115,7 +107,7 @@ router.post(
  *         description: Token thiết bị không hợp lệ
  */
 router.post(
-  '/log-batch',
+  "/log-batch",
   deviceAuthMiddleware,
   validate(logBatchSchema),
   accessController.logBatch
@@ -150,11 +142,7 @@ router.post(
  *       401:
  *         description: Chưa đăng nhập
  */
-router.get(
-  '/logs',
-  authMiddleware,
-  accessController.getLogs
-);
+router.get("/logs", authMiddleware, accessController.getLogs);
 
 /**
  * @swagger
@@ -170,11 +158,7 @@ router.get(
  *       401:
  *         description: Chưa đăng nhập
  */
-router.get(
-  '/stats',
-  authMiddleware,
-  accessController.getStats
-);
+router.get("/stats", authMiddleware, accessController.getStats);
 
 /**
  * @swagger
@@ -190,10 +174,6 @@ router.get(
  *       401:
  *         description: Chưa đăng nhập
  */
-router.get(
-  '/recent',
-  authMiddleware,
-  accessController.getRecent
-);
+router.get("/recent", authMiddleware, accessController.getRecent);
 
 module.exports = router;

@@ -1,15 +1,15 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const deviceController = require('../../controllers/device.controller');
-const { deviceAuthMiddleware } = require('../../middleware/deviceAuth');
-const { authMiddleware } = require('../../middleware/auth');
-const { deviceLimiter } = require('../../middleware/rateLimiter');
-const { validate } = require('../../middleware/validation');
+const deviceController = require("../../controllers/device.controller");
+const { deviceAuthMiddleware } = require("../../middleware/deviceAuth");
+const { authMiddleware } = require("../../middleware/auth");
+const { deviceLimiter } = require("../../middleware/rateLimiter");
+const { validate } = require("../../middleware/validation");
 const {
   deviceRegisterSchema,
   deviceHeartbeatSchema,
-  deviceConfigUpdateSchema
-} = require('../../utils/validators');
+  deviceConfigUpdateSchema,
+} = require("../../utils/validators");
 
 /**
  * @swagger
@@ -32,21 +32,17 @@ const {
  *           schema:
  *             type: object
  *             required:
- *               - deviceId
+ *               - device_id
  *               - secret
  *             properties:
- *               deviceId:
+ *               device_id:
  *                 type: string
- *                 example: "ESP32-001"
+ *                 example: "reader-lobby-01"
+ *                 description: ID thiết bị (phải khớp với DEVICE_SECRETS)
  *               secret:
  *                 type: string
- *                 example: "device-secret-key"
- *               name:
- *                 type: string
- *                 example: "Cửa chính"
- *               location:
- *                 type: string
- *                 example: "Tầng 1"
+ *                 example: "secret_lobby_2024"
+ *                 description: Secret key của thiết bị (phải khớp với DEVICE_SECRETS)
  *     responses:
  *       200:
  *         description: Đăng ký thành công
@@ -68,7 +64,7 @@ const {
  *         description: Secret key không hợp lệ
  */
 router.post(
-  '/register',
+  "/register",
   deviceLimiter,
   validate(deviceRegisterSchema),
   deviceController.register
@@ -89,11 +85,7 @@ router.post(
  *       401:
  *         description: Token không hợp lệ
  */
-router.get(
-  '/config',
-  deviceAuthMiddleware,
-  deviceController.getConfig
-);
+router.get("/config", deviceAuthMiddleware, deviceController.getConfig);
 
 /**
  * @swagger
@@ -123,7 +115,7 @@ router.get(
  *         description: Token không hợp lệ
  */
 router.post(
-  '/heartbeat',
+  "/heartbeat",
   deviceAuthMiddleware,
   validate(deviceHeartbeatSchema),
   deviceController.heartbeat
@@ -159,11 +151,7 @@ router.post(
  *       401:
  *         description: Chưa đăng nhập
  */
-router.get(
-  '/list',
-  authMiddleware,
-  deviceController.listDevices
-);
+router.get("/list", authMiddleware, deviceController.listDevices);
 
 /**
  * @swagger
@@ -186,11 +174,7 @@ router.get(
  *       404:
  *         description: Không tìm thấy thiết bị
  */
-router.get(
-  '/:deviceId',
-  authMiddleware,
-  deviceController.getDevice
-);
+router.get("/:deviceId", authMiddleware, deviceController.getDevice);
 
 /**
  * @swagger
@@ -227,7 +211,7 @@ router.get(
  *         description: Không tìm thấy thiết bị
  */
 router.put(
-  '/:deviceId/config',
+  "/:deviceId/config",
   authMiddleware,
   validate(deviceConfigUpdateSchema),
   deviceController.updateConfig

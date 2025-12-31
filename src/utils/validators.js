@@ -84,13 +84,6 @@ const deviceRegisterSchema = Joi.object({
   secret: Joi.string().required().messages({
     "any.required": "Secret là bắt buộc",
   }),
-  hardware_type: Joi.string().required().messages({
-    "any.required": "Hardware type là bắt buộc",
-  }),
-  firmware_version: Joi.string().optional(),
-  door_id: Joi.string().required().messages({
-    "any.required": "Door ID là bắt buộc",
-  }),
 });
 
 const deviceHeartbeatSchema = Joi.object({
@@ -116,12 +109,10 @@ const deviceConfigUpdateSchema = Joi.object({
 // Card schemas
 // =====================
 const cardCreateSchema = Joi.object({
-  device_id: Joi.string().required().messages({
-    "any.required": "Device ID là bắt buộc",
-  }),
-  card_uid: Joi.string().required().messages({
+  uid: Joi.string().required().messages({
     "any.required": "Card UID là bắt buộc",
   }),
+  label: Joi.string().optional(),
 });
 
 const cardUpdateSchema = Joi.object({
@@ -139,38 +130,20 @@ const cardUpdateSchema = Joi.object({
 });
 
 const cardAssignSchema = Joi.object({
-  user_id: Joi.string().required().messages({
+  userId: Joi.string().required().messages({
     "any.required": "User ID là bắt buộc",
   }),
-  policy: Joi.object({
-    access_level: Joi.string()
-      .valid("staff", "manager", "admin", "guest")
-      .default("staff"),
-    valid_until: Joi.string().isoDate().allow(null).optional(),
-    allowed_doors: Joi.array().items(Joi.string()).default(["*"]),
-  }).optional(),
 });
 
 // =====================
 // Access schemas (ESP32)
 // =====================
 const accessCheckSchema = Joi.object({
-  device_id: Joi.string().required().messages({
-    "any.required": "Device ID là bắt buộc",
+  cardUid: Joi.string().required().messages({
+    "any.required": "Card UID là bắt buộc",
   }),
-  door_id: Joi.string().required().messages({
+  doorId: Joi.string().required().messages({
     "any.required": "Door ID là bắt buộc",
-  }),
-  card_id: Joi.string().allow(null).optional(),
-  card_uid: Joi.string().allow(null).optional(),
-  credential: Joi.object({
-    raw: Joi.string().required(),
-    format: Joi.string().valid("jwt", "custom").default("jwt"),
-  })
-    .allow(null)
-    .optional(),
-  timestamp: Joi.string().isoDate().required().messages({
-    "any.required": "Timestamp là bắt buộc",
   }),
 });
 

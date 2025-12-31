@@ -97,12 +97,13 @@ router.get("/:id", authMiddleware, doorsController.getById);
  *           schema:
  *             type: object
  *             required:
- *               - command
+ *               - action
  *             properties:
- *               command:
+ *               action:
  *                 type: string
- *                 enum: [UNLOCK, LOCK]
- *                 example: UNLOCK
+ *                 enum: [unlock, lock]
+ *                 example: unlock
+ *                 description: Hành động điều khiển cửa
  *     responses:
  *       200:
  *         description: Lệnh đã được gửi
@@ -190,9 +191,25 @@ router.put(
  *                 data:
  *                   type: object
  *                   properties:
+ *                     hasCommand:
+ *                       type: boolean
+ *                       description: Có lệnh đang chờ hay không
  *                     command:
- *                       type: string
- *                       enum: [UNLOCK, LOCK, null]
+ *                       type: object
+ *                       nullable: true
+ *                       description: Command object hoặc null nếu không có lệnh
+ *                       properties:
+ *                         id:
+ *                           type: string
+ *                         action:
+ *                           type: string
+ *                           enum: [unlock, lock]
+ *                         timestamp:
+ *                           type: number
+ *                         requestedBy:
+ *                           type: string
+ *                         processed:
+ *                           type: boolean
  *       401:
  *         description: Token thiết bị không hợp lệ
  */
@@ -273,6 +290,19 @@ router.get(
  *         schema:
  *           type: string
  *         description: ID cửa
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               success:
+ *                 type: boolean
+ *                 default: true
+ *                 description: Kết quả thực hiện lệnh
+ *           example:
+ *             success: true
  *     responses:
  *       200:
  *         description: Xác nhận thành công
