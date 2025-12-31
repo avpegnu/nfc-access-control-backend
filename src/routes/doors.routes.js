@@ -1,12 +1,12 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const doorsController = require('../controllers/doors.controller');
-const { authMiddleware } = require('../middleware/auth');
-const { deviceAuthMiddleware } = require('../middleware/deviceAuth');
-const { validateBody } = require('../middleware/validation');
-const { deviceLimiter } = require('../middleware/rateLimiter');
-const { doorCommandSchema, doorStatusSchema } = require('../utils/validators');
+const doorsController = require("../controllers/doors.controller");
+const { authMiddleware } = require("../middleware/auth");
+const { deviceAuthMiddleware } = require("../middleware/deviceAuth");
+const { validateBody } = require("../middleware/validation");
+const { deviceLimiter } = require("../middleware/rateLimiter");
+const { doorCommandSchema, doorStatusSchema } = require("../utils/validators");
 
 /**
  * @swagger
@@ -40,11 +40,7 @@ const { doorCommandSchema, doorStatusSchema } = require('../utils/validators');
  *       401:
  *         description: Chưa đăng nhập
  */
-router.get(
-  '/',
-  authMiddleware,
-  doorsController.getAll
-);
+router.get("/", authMiddleware, doorsController.getAll);
 
 /**
  * @swagger
@@ -76,11 +72,7 @@ router.get(
  *       404:
  *         description: Không tìm thấy cửa
  */
-router.get(
-  '/:id',
-  authMiddleware,
-  doorsController.getById
-);
+router.get("/:id", authMiddleware, doorsController.getById);
 
 /**
  * @swagger
@@ -120,7 +112,7 @@ router.get(
  *         description: Không tìm thấy cửa
  */
 router.post(
-  '/:id/command',
+  "/:id/command",
   authMiddleware,
   validateBody(doorCommandSchema),
   doorsController.sendCommand
@@ -162,7 +154,7 @@ router.post(
  *         description: Token thiết bị không hợp lệ
  */
 router.put(
-  '/:id/status',
+  "/:id/status",
   deviceLimiter,
   deviceAuthMiddleware,
   validateBody(doorStatusSchema),
@@ -205,10 +197,64 @@ router.put(
  *         description: Token thiết bị không hợp lệ
  */
 router.get(
-  '/:id/command',
+  "/:id/command",
   deviceLimiter,
   deviceAuthMiddleware,
   doorsController.getCommand
+);
+
+/**
+ * @swagger
+ * /api/doors/{id}/command/poll:
+ *   get:
+ *     summary: Long polling - Đợi cho đến khi có lệnh mới (ESP32)
+ *     description: |
+ *       ESP32 gọi endpoint này, server sẽ GIỮ connection mở và chỉ trả về khi:
+ *       - Có command mới (trả về ngay lập tức)
+ *       - Timeout 30s (trả về empty)
+ *
+ *       Giúp giảm latency từ 2-3s xuống ~500ms
+ *     tags: [Doors]
+ *     security:
+ *       - DeviceToken: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID cửa
+ *     responses:
+ *       200:
+ *         description: Có command hoặc timeout
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     hasCommand:
+ *                       type: boolean
+ *                       description: True nếu có command
+ *                     command:
+ *                       type: object
+ *                       nullable: true
+ *                       description: Command object hoặc null
+ *                     waitTime:
+ *                       type: number
+ *                       description: Thời gian đợi (ms)
+ *       401:
+ *         description: Token thiết bị không hợp lệ
+ */
+router.get(
+  "/:id/command/poll",
+  deviceLimiter,
+  deviceAuthMiddleware,
+  doorsController.pollCommand
 );
 
 /**
@@ -234,7 +280,7 @@ router.get(
  *         description: Token thiết bị không hợp lệ
  */
 router.post(
-  '/:id/command/ack',
+  "/:id/command/ack",
   deviceLimiter,
   deviceAuthMiddleware,
   doorsController.acknowledgeCommand

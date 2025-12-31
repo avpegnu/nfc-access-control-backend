@@ -1,5 +1,6 @@
-const doorsService = require('../services/doors.service');
-const { success, successMessage } = require('../utils/response');
+const doorsService = require("../services/doors.service");
+const { success, successMessage } = require("../utils/response");
+const logger = require("../utils/logger");
 
 /**
  * Doors controller
@@ -30,9 +31,9 @@ const getById = async (req, res, next) => {
       return res.status(404).json({
         success: false,
         error: {
-          code: 'DOOR_NOT_FOUND',
-          message: 'Cửa không tồn tại'
-        }
+          code: "DOOR_NOT_FOUND",
+          message: "Cửa không tồn tại",
+        },
       });
     }
 
@@ -50,7 +51,7 @@ const sendCommand = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { action } = req.body;
-    const requestedBy = req.user?.email || 'web_admin';
+    const requestedBy = req.user?.email || "web_admin";
 
     const result = await doorsService.sendCommand(id, action, requestedBy);
 
@@ -88,7 +89,7 @@ const getCommand = async (req, res, next) => {
 
     return success(res, {
       hasCommand: !!command,
-      command
+      command,
     });
   } catch (err) {
     next(err);
@@ -112,11 +113,78 @@ const acknowledgeCommand = async (req, res, next) => {
   }
 };
 
+/**
+ * GET /api/doors/:id/command/poll
+ * ESP32 long polling - giữ connection cho đến khi có command hoặc timeout
+ */
+const pollCommand = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const timeout = 30000; // 30 giây
+    const checkInterval = 500; // Check mỗi 500ms
+    const startTime = Date.now();
+
+    logger.info(`Long polling started for door ${id}`);
+
+    // Hàm check command
+    const checkForCommand = async () => {
+      const command = await doorsService.getPendingCommand(id);
+      const elapsed = Date.now() - startTime;
+
+      // Nếu có command → trả về ngay
+      if (command) {
+        logger.info(
+          `Long polling: Command found for door ${id} after ${elapsed}ms`
+        );
+        return success(res, {
+          hasCommand: true,
+          command,
+          waitTime: elapsed,
+        });
+      }
+
+      // Nếu timeout → trả về empty
+      if (elapsed >= timeout) {
+        logger.info(`Long polling: Timeout for door ${id} after ${elapsed}ms`);
+        return success(res, {
+          hasCommand: false,
+          command: null,
+          waitTime: elapsed,
+        });
+      }
+
+      // Chưa có command và chưa timeout → check lại sau 500ms
+      return null;
+    };
+
+    // Check ngay lần đầu
+    const initialResult = await checkForCommand();
+    if (initialResult) return;
+
+    // Poll với interval
+    const intervalId = setInterval(async () => {
+      const result = await checkForCommand();
+      if (result) {
+        clearInterval(intervalId);
+      }
+    }, checkInterval);
+
+    // Cleanup khi client disconnect
+    req.on("close", () => {
+      clearInterval(intervalId);
+      logger.info(`Long polling: Client disconnected for door ${id}`);
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getAll,
   getById,
   sendCommand,
   updateStatus,
   getCommand,
-  acknowledgeCommand
+  acknowledgeCommand,
+  pollCommand,
 };
