@@ -1,14 +1,14 @@
-const { v4: uuidv4 } = require('uuid');
-const firebaseService = require('./firebase.service');
+const { v4: uuidv4 } = require("uuid");
+const firebaseService = require("./firebase.service");
 
-const CARDS_PATH = 'cards';
+const CARDS_PATH = "cards";
 
 /**
  * Helper: Find card by field value
  */
 const findCardByField = async (field, value) => {
   const allCards = await firebaseService.getAll(CARDS_PATH);
-  return allCards.filter(card => card[field] === value);
+  return allCards.filter((card) => card[field] === value);
 };
 
 /**
@@ -19,7 +19,7 @@ const createCard = async (data) => {
   const { device_id, card_uid } = data;
 
   // Check if card_uid already exists
-  const existingCards = await findCardByField('card_uid', card_uid);
+  const existingCards = await findCardByField("card_uid", card_uid);
 
   // If card exists, return it instead of throwing error
   // This handles cases where ESP32 failed to write data and retries
@@ -35,12 +35,12 @@ const createCard = async (data) => {
     card_uid,
     user_id: null,
     scope: [],
-    status: 'inactive', // Card starts inactive until admin assigns user
+    status: "inactive", // Card starts inactive until admin assigns user
     enroll_mode: true,
     enrolled_by_device: device_id,
     offline_enabled: false,
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
   };
 
   await firebaseService.createWithId(CARDS_PATH, cardId, card);
@@ -55,7 +55,7 @@ const getCardById = async (cardId) => {
   const card = await firebaseService.getById(CARDS_PATH, cardId);
 
   if (!card) {
-    throw { code: 'CARD_NOT_FOUND', message: 'Thẻ không tồn tại', status: 404 };
+    throw { code: "CARD_NOT_FOUND", message: "Thẻ không tồn tại", status: 404 };
   }
 
   return card;
@@ -65,7 +65,7 @@ const getCardById = async (cardId) => {
  * Get card by card_uid
  */
 const getCardByUid = async (cardUid) => {
-  const cards = await findCardByField('card_uid', cardUid);
+  const cards = await findCardByField("card_uid", cardUid);
 
   if (cards.length === 0) {
     return null;
@@ -81,18 +81,13 @@ const updateCard = async (cardId, data) => {
   const card = await firebaseService.getById(CARDS_PATH, cardId);
 
   if (!card) {
-    throw { code: 'CARD_NOT_FOUND', message: 'Thẻ không tồn tại', status: 404 };
+    throw { code: "CARD_NOT_FOUND", message: "Thẻ không tồn tại", status: 404 };
   }
 
   const updateData = {
     ...data,
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
   };
-
-  // If user is assigned, turn off enroll_mode
-  if (data.user_id && card.enroll_mode) {
-    updateData.enroll_mode = false;
-  }
 
   await firebaseService.update(`${CARDS_PATH}/${cardId}`, updateData);
 
@@ -106,28 +101,31 @@ const assignUserToCard = async (cardId, userId, policy = {}) => {
   const card = await firebaseService.getById(CARDS_PATH, cardId);
 
   if (!card) {
-    throw { code: 'CARD_NOT_FOUND', message: 'Thẻ không tồn tại', status: 404 };
+    throw { code: "CARD_NOT_FOUND", message: "Thẻ không tồn tại", status: 404 };
   }
 
   // Verify user exists
-  const user = await firebaseService.getById('users', userId);
+  const user = await firebaseService.getById("users", userId);
   if (!user) {
-    throw { code: 'USER_NOT_FOUND', message: 'Người dùng không tồn tại', status: 404 };
+    throw {
+      code: "USER_NOT_FOUND",
+      message: "Người dùng không tồn tại",
+      status: 404,
+    };
   }
 
   const updateData = {
     user_id: userId,
     user_name: user.name,
-    status: 'active', // Activate card when user is assigned
-    enroll_mode: false,
+    status: "active", // Activate card when user is assigned
     policy: {
-      access_level: policy.access_level || 'staff',
+      access_level: policy.access_level || "staff",
       valid_until: policy.valid_until || null,
-      allowed_doors: policy.allowed_doors || ['*'],
-      ...policy
+      allowed_doors: policy.allowed_doors || ["*"],
+      ...policy,
     },
     assigned_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
   };
 
   await firebaseService.update(`${CARDS_PATH}/${cardId}`, updateData);
@@ -138,18 +136,18 @@ const assignUserToCard = async (cardId, userId, policy = {}) => {
 /**
  * Revoke card - Admin only
  */
-const revokeCard = async (cardId, reason = 'revoked') => {
+const revokeCard = async (cardId, reason = "revoked") => {
   const card = await firebaseService.getById(CARDS_PATH, cardId);
 
   if (!card) {
-    throw { code: 'CARD_NOT_FOUND', message: 'Thẻ không tồn tại', status: 404 };
+    throw { code: "CARD_NOT_FOUND", message: "Thẻ không tồn tại", status: 404 };
   }
 
   const updateData = {
-    status: 'revoked',
+    status: "revoked",
     revoked_at: new Date().toISOString(),
     revoke_reason: reason,
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
   };
 
   await firebaseService.update(`${CARDS_PATH}/${cardId}`, updateData);
@@ -164,17 +162,21 @@ const reactivateCard = async (cardId) => {
   const card = await firebaseService.getById(CARDS_PATH, cardId);
 
   if (!card) {
-    throw { code: 'CARD_NOT_FOUND', message: 'Thẻ không tồn tại', status: 404 };
+    throw { code: "CARD_NOT_FOUND", message: "Thẻ không tồn tại", status: 404 };
   }
 
-  if (card.status !== 'revoked') {
-    throw { code: 'CARD_NOT_REVOKED', message: 'Thẻ không ở trạng thái bị thu hồi', status: 400 };
+  if (card.status !== "revoked") {
+    throw {
+      code: "CARD_NOT_REVOKED",
+      message: "Thẻ không ở trạng thái bị thu hồi",
+      status: 400,
+    };
   }
 
   const updateData = {
-    status: 'active',
+    status: "active",
     reactivated_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
   };
 
   await firebaseService.update(`${CARDS_PATH}/${cardId}`, updateData);
@@ -190,15 +192,15 @@ const listCards = async (filters = {}) => {
 
   // Apply filters
   if (filters.status) {
-    cards = cards.filter(card => card.status === filters.status);
+    cards = cards.filter((card) => card.status === filters.status);
   }
 
   if (filters.enroll_mode !== undefined) {
-    cards = cards.filter(card => card.enroll_mode === filters.enroll_mode);
+    cards = cards.filter((card) => card.enroll_mode === filters.enroll_mode);
   }
 
   if (filters.user_id) {
-    cards = cards.filter(card => card.user_id === filters.user_id);
+    cards = cards.filter((card) => card.user_id === filters.user_id);
   }
 
   return cards;
@@ -211,7 +213,7 @@ const deleteCard = async (cardId) => {
   const card = await firebaseService.getById(CARDS_PATH, cardId);
 
   if (!card) {
-    throw { code: 'CARD_NOT_FOUND', message: 'Thẻ không tồn tại', status: 404 };
+    throw { code: "CARD_NOT_FOUND", message: "Thẻ không tồn tại", status: 404 };
   }
 
   await firebaseService.delete(CARDS_PATH, cardId);
@@ -228,5 +230,5 @@ module.exports = {
   revokeCard,
   reactivateCard,
   listCards,
-  deleteCard
+  deleteCard,
 };

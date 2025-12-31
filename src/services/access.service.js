@@ -1,9 +1,9 @@
-const firebaseService = require('./firebase.service');
-const cardService = require('./card.service');
-const credentialService = require('./credential.service');
-const logger = require('../utils/logger');
+const firebaseService = require("./firebase.service");
+const cardService = require("./card.service");
+const credentialService = require("./credential.service");
+const logger = require("../utils/logger");
 
-const ACCESS_LOGS_PATH = 'access_logs';
+const ACCESS_LOGS_PATH = "access_logs";
 
 /**
  * Access control service
@@ -20,11 +20,12 @@ class AccessService {
    * 4. Deny if no credential provided (no auto-allow)
    */
   async checkAccess(data) {
-    const { device_id, door_id, card_id, card_uid, credential, timestamp } = data;
+    const { device_id, door_id, card_id, card_uid, credential, timestamp } =
+      data;
 
     // Track access attempt
-    let result = 'DENY';
-    let reason = 'UNKNOWN';
+    let result = "DENY";
+    let reason = "UNKNOWN";
     let user = null;
     let policy = null;
     let newCredential = null;
@@ -43,20 +44,30 @@ class AccessService {
 
       // Card not found
       if (!card) {
-        result = 'DENY';
-        reason = 'CARD_NOT_FOUND';
-        await this.logAccess({ door_id, card_id, card_uid, result, reason, device_id });
+        result = "DENY";
+        reason = "CARD_NOT_FOUND";
+        await this.logAccess({
+          door_id,
+          card_id,
+          card_uid,
+          result,
+          reason,
+          device_id,
+        });
         return { result, reason };
       }
 
       // Step 2: Validate credential if provided
       if (credential && credential.raw) {
-        const verifyResult = credentialService.verifyCredential(credential.raw, card_uid);
+        const verifyResult = credentialService.verifyCredential(
+          credential.raw,
+          card_uid
+        );
 
         // Credential invalid
         if (!verifyResult.valid) {
-          result = 'DENY';
-          reason = 'INVALID_CREDENTIAL';
+          result = "DENY";
+          reason = "INVALID_CREDENTIAL";
           await this.logAccess({
             door_id,
             card_id: card.card_id,
@@ -65,7 +76,7 @@ class AccessService {
             reason,
             user_id: card.user_id,
             device_id,
-            error: verifyResult.error
+            error: verifyResult.error,
           });
           return { result, reason: verifyResult.error };
         }
@@ -74,34 +85,111 @@ class AccessService {
         const now = Math.floor(Date.now() / 1000);
         const payload = verifyResult.payload;
 
-        // Credential not expired - use payload for access decision (NO DATABASE CALLS)
+        // Credential not expired - validate card from database and allow access
         if (payload.exp > now) {
-          // Check door access from credential payload
-          if (payload.allowed_doors && !payload.allowed_doors.includes('*') && !payload.allowed_doors.includes(door_id)) {
-            result = 'DENY';
-            reason = 'DOOR_NOT_ALLOWED';
+          // Verify card_id matches
+          if (payload.card_id !== card.card_id) {
+            result = "DENY";
+            reason = "CARD_ID_MISMATCH";
             await this.logAccess({
               door_id,
               card_id: card.card_id,
               card_uid,
               result,
               reason,
-              user_id: payload.user_id,
-              user_name: payload.user_name,
-              device_id
+              user_id: card.user_id,
+              device_id,
+            });
+            return { result, reason };
+          }
+
+          // Check card status from database
+          if (card.status !== "active") {
+            result = "DENY";
+            reason = "CARD_REVOKED";
+            await this.logAccess({
+              door_id,
+              card_id: card.card_id,
+              card_uid,
+              result,
+              reason,
+              user_id: card.user_id,
+              device_id,
+            });
+            return { result, reason };
+          }
+
+          // Get user and policy from database (real-time validation)
+          if (card.user_id) {
+            user = await firebaseService
+              .getById("users", card.user_id)
+              .catch(() => null);
+
+            if (user && !user.isActive) {
+              result = "DENY";
+              reason = "USER_INACTIVE";
+              await this.logAccess({
+                door_id,
+                card_id: card.card_id,
+                card_uid,
+                result,
+                reason,
+                user_id: card.user_id,
+                user_name: user?.name || user?.displayName || null,
+                device_id,
+              });
+              return { result, reason };
+            }
+          }
+
+          // Get policy from card
+          policy = card.policy || { access_level: "staff" };
+
+          // Check policy validity
+          if (policy.valid_until) {
+            const validUntil = new Date(policy.valid_until).getTime();
+            if (Date.now() > validUntil) {
+              result = "DENY";
+              reason = "POLICY_EXPIRED";
+              await this.logAccess({
+                door_id,
+                card_id: card.card_id,
+                card_uid,
+                result,
+                reason,
+                user_id: card.user_id,
+                user_name: user?.name || user?.displayName || null,
+                device_id,
+              });
+              return { result, reason };
+            }
+          }
+
+          // Check door access from database policy
+          if (
+            policy.allowed_doors &&
+            !policy.allowed_doors.includes("*") &&
+            !policy.allowed_doors.includes(door_id)
+          ) {
+            result = "DENY";
+            reason = "DOOR_NOT_ALLOWED";
+            await this.logAccess({
+              door_id,
+              card_id: card.card_id,
+              card_uid,
+              result,
+              reason,
+              user_id: card.user_id,
+              user_name: user?.name || user?.displayName || null,
+              device_id,
             });
             return { result, reason };
           }
 
           // Access granted - rotate credential
-          result = 'ALLOW';
-          reason = 'ACCESS_GRANTED';
-          
-          // Get user for credential generation (only if needed)
-          if (card.user_id) {
-            user = await firebaseService.getById('users', card.user_id).catch(() => null);
-          }
-          
+          result = "ALLOW";
+          reason = "ACCESS_GRANTED";
+
           newCredential = credentialService.generateCredential(card, user);
 
           await this.logAccess({
@@ -110,53 +198,79 @@ class AccessService {
             card_uid,
             result,
             reason,
-            user_id: payload.user_id,
-            user_name: payload.user_name,
+            user_id: card.user_id,
+            user_name: user?.name || user?.displayName || null,
             device_id,
-            credential_rotated: true
+            credential_rotated: true,
           });
 
           return {
             result,
             reason,
             relay_open_ms: relayOpenMs,
-            user: { user_id: payload.user_id, name: payload.user_name },
-            policy: { access_level: payload.access_level, valid_until: null },
-            credential: newCredential
+            user: user
+              ? { user_id: user.id, name: user.name || user.displayName }
+              : null,
+            policy: {
+              access_level: policy.access_level,
+              valid_until: policy.valid_until || null,
+            },
+            credential: newCredential,
           };
         }
 
         // Credential expired - continue to database validation below
-        logger.info(`Credential expired for card ${card.card_id}, validating against database`);
+        logger.info(
+          `Credential expired for card ${card.card_id}, validating against database`
+        );
       }
 
       // Step 3: Database validation (for expired credentials or no credential)
-      
+
       // Check card status
-      if (card.status !== 'active') {
-        result = 'DENY';
-        reason = 'CARD_REVOKED';
-        await this.logAccess({ door_id, card_id: card.card_id, card_uid, result, reason, device_id });
+      if (card.status !== "active") {
+        result = "DENY";
+        reason = "CARD_REVOKED";
+        await this.logAccess({
+          door_id,
+          card_id: card.card_id,
+          card_uid,
+          result,
+          reason,
+          device_id,
+        });
         return { result, reason };
       }
 
-      // Check enroll_mode (simplified - no credential check needed)
+      // Check enroll_mode
       if (card.enroll_mode) {
         // Card is in enroll mode but user not assigned yet
         if (!card.user_id) {
-          result = 'DENY';
-          reason = 'CARD_NOT_ASSIGNED';
-          await this.logAccess({ door_id, card_id: card.card_id, card_uid, result, reason, device_id });
+          result = "DENY";
+          reason = "CARD_NOT_ASSIGNED";
+          await this.logAccess({
+            door_id,
+            card_id: card.card_id,
+            card_uid,
+            result,
+            reason,
+            device_id,
+          });
           return { result, reason };
         }
 
-        // User assigned but still in enroll mode - deny but issue credential for writing
-        result = 'DENY';
-        reason = 'ENROLL_MODE';
-        
+        // User assigned and in enroll mode - ALLOW, issue credential, then turn off enroll_mode
+        result = "ALLOW";
+        reason = "ENROLL_MODE";
+
         // Get user for credential
-        user = await firebaseService.getById('users', card.user_id).catch(() => null);
+        user = await firebaseService
+          .getById("users", card.user_id)
+          .catch(() => null);
         newCredential = credentialService.generateCredential(card, user);
+
+        // Turn off enroll_mode after first successful tap
+        await cardService.updateCard(card.card_id, { enroll_mode: false });
 
         await this.logAccess({
           door_id,
@@ -167,95 +281,145 @@ class AccessService {
           user_id: card.user_id,
           user_name: user?.name || user?.displayName || null,
           device_id,
-          credential_issued: true
-        });
-
-        return {
-          result,
-          reason,
-          user: user ? { user_id: user.id, name: user.name || user.displayName } : null,
-          credential: newCredential
-        };
-      }
-
-      // Get user if assigned
-      if (card.user_id) {
-        user = await firebaseService.getById('users', card.user_id).catch(() => null);
-
-        if (user && !user.isActive) {
-          result = 'DENY';
-          reason = 'USER_INACTIVE';
-          await this.logAccess({ door_id, card_id: card.card_id, card_uid, result, reason, user_id: card.user_id, user_name: user?.name || user?.displayName || null, device_id });
-          return { result, reason };
-        }
-      }
-
-      // Get policy from card
-      policy = card.policy || { access_level: 'staff' };
-
-      // Check policy validity
-      if (policy.valid_until) {
-        const validUntil = new Date(policy.valid_until).getTime();
-        if (Date.now() > validUntil) {
-          result = 'DENY';
-          reason = 'POLICY_EXPIRED';
-          await this.logAccess({ door_id, card_id: card.card_id, card_uid, result, reason, user_id: card.user_id, user_name: user?.name || user?.displayName || null, device_id });
-          return { result, reason };
-        }
-      }
-
-      // Check door access
-      if (policy.allowed_doors && !policy.allowed_doors.includes('*') && !policy.allowed_doors.includes(door_id)) {
-        result = 'DENY';
-        reason = 'DOOR_NOT_ALLOWED';
-        await this.logAccess({ door_id, card_id: card.card_id, card_uid, result, reason, user_id: card.user_id, user_name: user?.name || user?.displayName || null, device_id });
-        return { result, reason };
-      }
-
-      // If we have expired credential, allow and rotate
-      if (credential && credential.raw) {
-        result = 'ALLOW';
-        reason = 'CREDENTIAL_ROTATED';
-        newCredential = credentialService.generateCredential(card, user);
-
-        await this.logAccess({
-          door_id,
-          card_id: card.card_id,
-          card_uid,
-          result,
-          reason,
-          user_id: card.user_id,
-          user_name: user?.name || user?.displayName || null,
-          device_id,
-          credential_rotated: true
+          credential_issued: true,
+          enroll_mode_disabled: true,
         });
 
         return {
           result,
           reason,
           relay_open_ms: relayOpenMs,
-          user: user ? { user_id: user.id, name: user.name || user.displayName } : null,
-          policy: { access_level: policy.access_level, valid_until: policy.valid_until || null },
-          credential: newCredential
+          user: user
+            ? { user_id: user.id, name: user.name || user.displayName }
+            : null,
+          credential: newCredential,
+        };
+      }
+
+      // Get user if assigned
+      if (card.user_id) {
+        user = await firebaseService
+          .getById("users", card.user_id)
+          .catch(() => null);
+
+        if (user && !user.isActive) {
+          result = "DENY";
+          reason = "USER_INACTIVE";
+          await this.logAccess({
+            door_id,
+            card_id: card.card_id,
+            card_uid,
+            result,
+            reason,
+            user_id: card.user_id,
+            user_name: user?.name || user?.displayName || null,
+            device_id,
+          });
+          return { result, reason };
+        }
+      }
+
+      // Get policy from card
+      policy = card.policy || { access_level: "staff" };
+
+      // Check policy validity
+      if (policy.valid_until) {
+        const validUntil = new Date(policy.valid_until).getTime();
+        if (Date.now() > validUntil) {
+          result = "DENY";
+          reason = "POLICY_EXPIRED";
+          await this.logAccess({
+            door_id,
+            card_id: card.card_id,
+            card_uid,
+            result,
+            reason,
+            user_id: card.user_id,
+            user_name: user?.name || user?.displayName || null,
+            device_id,
+          });
+          return { result, reason };
+        }
+      }
+
+      // Check door access
+      if (
+        policy.allowed_doors &&
+        !policy.allowed_doors.includes("*") &&
+        !policy.allowed_doors.includes(door_id)
+      ) {
+        result = "DENY";
+        reason = "DOOR_NOT_ALLOWED";
+        await this.logAccess({
+          door_id,
+          card_id: card.card_id,
+          card_uid,
+          result,
+          reason,
+          user_id: card.user_id,
+          user_name: user?.name || user?.displayName || null,
+          device_id,
+        });
+        return { result, reason };
+      }
+
+      // If we have expired credential, allow and rotate
+      if (credential && credential.raw) {
+        result = "ALLOW";
+        reason = "CREDENTIAL_ROTATED";
+        newCredential = credentialService.generateCredential(card, user);
+
+        await this.logAccess({
+          door_id,
+          card_id: card.card_id,
+          card_uid,
+          result,
+          reason,
+          user_id: card.user_id,
+          user_name: user?.name || user?.displayName || null,
+          device_id,
+          credential_rotated: true,
+        });
+
+        return {
+          result,
+          reason,
+          relay_open_ms: relayOpenMs,
+          user: user
+            ? { user_id: user.id, name: user.name || user.displayName }
+            : null,
+          policy: {
+            access_level: policy.access_level,
+            valid_until: policy.valid_until || null,
+          },
+          credential: newCredential,
         };
       }
 
       // No credential provided - deny access
-      result = 'DENY';
-      reason = 'CREDENTIAL_REQUIRED';
-      await this.logAccess({ door_id, card_id: card.card_id, card_uid, result, reason, user_id: card.user_id, user_name: user?.name || user?.displayName || null, device_id });
+      result = "DENY";
+      reason = "CREDENTIAL_REQUIRED";
+      await this.logAccess({
+        door_id,
+        card_id: card.card_id,
+        card_uid,
+        result,
+        reason,
+        user_id: card.user_id,
+        user_name: user?.name || user?.displayName || null,
+        device_id,
+      });
       return { result, reason };
-
     } catch (error) {
-      logger.error('Access check error:', error);
+      logger.error("Access check error:", error);
       await this.logAccess({
         door_id,
         card_id,
         card_uid,
-        result: 'DENY',
-        reason: 'SYSTEM_ERROR',
+        result: "DENY",
+        reason: "SYSTEM_ERROR",
         device_id,
-        error: error.message
+        error: error.message,
       });
       throw error;
     }
@@ -275,16 +439,20 @@ class AccessService {
       device_id: data.device_id || null,
       decision: data.result,
       reason: data.reason,
-      ...data.credential_issued && { credential_issued: true },
-      ...data.credential_rotated && { credential_rotated: true },
-      ...data.error && { error: data.error }
+      ...(data.credential_issued && { credential_issued: true }),
+      ...(data.credential_rotated && { credential_rotated: true }),
+      ...(data.error && { error: data.error }),
     };
 
     try {
       await firebaseService.push(ACCESS_LOGS_PATH, logEntry);
-      logger.info(`Access ${data.result}: card=${data.card_id || data.card_uid}, door=${data.door_id}, reason=${data.reason}`);
+      logger.info(
+        `Access ${data.result}: card=${data.card_id || data.card_uid}, door=${
+          data.door_id
+        }, reason=${data.reason}`
+      );
     } catch (error) {
-      logger.error('Failed to log access:', error);
+      logger.error("Failed to log access:", error);
     }
   }
 
@@ -300,16 +468,16 @@ class AccessService {
           ...log,
           device_id: deviceId,
           offline_sync: true,
-          synced_at: new Date().toISOString()
+          synced_at: new Date().toISOString(),
         };
         await firebaseService.push(ACCESS_LOGS_PATH, logEntry);
         accepted++;
       } catch (error) {
-        logger.error('Failed to sync offline log:', error);
+        logger.error("Failed to sync offline log:", error);
       }
     }
 
-    return { status: 'OK', accepted };
+    return { status: "OK", accepted };
   }
 
   /**
@@ -317,7 +485,10 @@ class AccessService {
    */
   getLogTimestamp(log) {
     if (log.ts) return new Date(log.ts).getTime();
-    if (log.timestamp) return typeof log.timestamp === 'number' ? log.timestamp : new Date(log.timestamp).getTime();
+    if (log.timestamp)
+      return typeof log.timestamp === "number"
+        ? log.timestamp
+        : new Date(log.timestamp).getTime();
     return 0;
   }
 
@@ -325,11 +496,11 @@ class AccessService {
    * Get result from log (normalize to granted/denied for frontend)
    */
   getLogResult(log) {
-    if (log.decision === 'ALLOW') return 'granted';
-    if (log.decision === 'DENY') return 'denied';
-    if (log.action === 'access_granted') return 'granted';
-    if (log.action === 'access_denied') return 'denied';
-    return log.result || 'denied';
+    if (log.decision === "ALLOW") return "granted";
+    if (log.decision === "DENY") return "denied";
+    if (log.action === "access_granted") return "granted";
+    if (log.action === "access_denied") return "denied";
+    return log.result || "denied";
   }
 
   /**
@@ -339,16 +510,16 @@ class AccessService {
     return {
       id: log.id,
       timestamp: this.getLogTimestamp(log),
-      cardUid: log.card_uid || log.cardUid || '',
+      cardUid: log.card_uid || log.cardUid || "",
       userId: log.user_id || log.userId || null,
       userName: log.user_name || log.userName || null,
       result: this.getLogResult(log),
-      action: log.action_type || 'entry',
-      doorId: log.door_id || log.doorId || 'door_main',
-      doorName: log.door_name || log.doorName || 'Cửa chính',
+      action: log.action_type || "entry",
+      doorId: log.door_id || log.doorId || "door_main",
+      doorName: log.door_name || log.doorName || "Cửa chính",
       reason: log.reason || null,
       deviceId: log.device_id || log.deviceId || null,
-      method: log.method || 'online'
+      method: log.method || "online",
     };
   }
 
@@ -363,7 +534,7 @@ class AccessService {
       endDate,
       result,
       doorId,
-      userId
+      userId,
     } = options;
 
     let logsData = await firebaseService.get(ACCESS_LOGS_PATH);
@@ -374,35 +545,37 @@ class AccessService {
 
     let logs = Object.entries(logsData).map(([id, log]) => ({
       id,
-      ...log
+      ...log,
     }));
 
     // Apply filters
     if (startDate) {
       const startTs = new Date(startDate).getTime();
-      logs = logs.filter(log => this.getLogTimestamp(log) >= startTs);
+      logs = logs.filter((log) => this.getLogTimestamp(log) >= startTs);
     }
 
     if (endDate) {
       const endTs = new Date(endDate).getTime();
-      logs = logs.filter(log => this.getLogTimestamp(log) <= endTs);
+      logs = logs.filter((log) => this.getLogTimestamp(log) <= endTs);
     }
 
     if (result) {
-      logs = logs.filter(log => {
+      logs = logs.filter((log) => {
         const logResult = this.getLogResult(log);
-        return (result === 'ALLOW' && logResult === 'granted') ||
-               (result === 'DENY' && logResult === 'denied') ||
-               logResult === result;
+        return (
+          (result === "ALLOW" && logResult === "granted") ||
+          (result === "DENY" && logResult === "denied") ||
+          logResult === result
+        );
       });
     }
 
     if (doorId) {
-      logs = logs.filter(log => (log.door_id || log.doorId) === doorId);
+      logs = logs.filter((log) => (log.door_id || log.doorId) === doorId);
     }
 
     if (userId) {
-      logs = logs.filter(log => (log.user_id || log.userId) === userId);
+      logs = logs.filter((log) => (log.user_id || log.userId) === userId);
     }
 
     // Sort by timestamp descending
@@ -413,60 +586,65 @@ class AccessService {
     const paginatedLogs = logs.slice(startIndex, startIndex + limit);
 
     return {
-      logs: paginatedLogs.map(log => this.transformLog(log)),
-      total
+      logs: paginatedLogs.map((log) => this.transformLog(log)),
+      total,
     };
   }
 
   /**
    * Get access statistics
    */
-  async getStats(period = 'today') {
+  async getStats(period = "today") {
     const now = Date.now();
     let startDate;
 
     switch (period) {
-      case 'today':
+      case "today":
         startDate = new Date().setHours(0, 0, 0, 0);
         break;
-      case 'week':
-        startDate = now - (7 * 24 * 60 * 60 * 1000);
+      case "week":
+        startDate = now - 7 * 24 * 60 * 60 * 1000;
         break;
-      case 'month':
-        startDate = now - (30 * 24 * 60 * 60 * 1000);
+      case "month":
+        startDate = now - 30 * 24 * 60 * 60 * 1000;
         break;
       default:
         startDate = new Date().setHours(0, 0, 0, 0);
     }
 
-    const { logs } = await this.getLogs({ startDate: new Date(startDate), limit: 10000 });
+    const { logs } = await this.getLogs({
+      startDate: new Date(startDate),
+      limit: 10000,
+    });
 
     const totalAccess = logs.length;
     // logs are already transformed, use frontend field names
-    const granted = logs.filter(l => l.result === 'granted').length;
-    const denied = logs.filter(l => l.result === 'denied').length;
+    const granted = logs.filter((l) => l.result === "granted").length;
+    const denied = logs.filter((l) => l.result === "denied").length;
 
-    const uniqueUserIds = new Set(logs.filter(l => l.userId).map(l => l.userId));
+    const uniqueUserIds = new Set(
+      logs.filter((l) => l.userId).map((l) => l.userId)
+    );
     const uniqueUsers = uniqueUserIds.size;
 
     const hourlyDistribution = [];
-    if (period === 'today') {
+    if (period === "today") {
       for (let hour = 0; hour < 24; hour++) {
         const hourStart = new Date().setHours(hour, 0, 0, 0);
         const hourEnd = new Date().setHours(hour, 59, 59, 999);
-        const count = logs.filter(l => {
+        const count = logs.filter((l) => {
           return l.timestamp >= hourStart && l.timestamp <= hourEnd;
         }).length;
         hourlyDistribution.push({ hour, count });
       }
     }
 
-    const recentActivity = logs.slice(0, 10).map(log => ({
+    const recentActivity = logs.slice(0, 10).map((log) => ({
       id: log.id,
       timestamp: log.timestamp,
-      userName: log.userName || 'Không xác định',
+      userName: log.userName || "Không xác định",
       result: log.result,
-      doorId: log.doorId
+      doorId: log.doorId,
     }));
 
     return {
@@ -475,7 +653,7 @@ class AccessService {
       denied,
       uniqueUsers,
       hourlyDistribution,
-      recentActivity
+      recentActivity,
     };
   }
 

@@ -1,51 +1,43 @@
-const { createCardCredential, verifyCardCredential, getKeyId } = require('../config/crypto');
-const { CREDENTIAL_EXPIRES_IN } = require('../config/env');
+const {
+  createCardCredential,
+  verifyCardCredential,
+  getKeyId,
+} = require("../config/crypto");
+const { CREDENTIAL_EXPIRES_IN } = require("../config/env");
 
 /**
  * Generate a new credential JWT for NFC card
  *
- * Credential payload:
- * - card_id: Internal card ID
- * - card_uid: Hardware UID (for offline verification)
- * - user_id: Associated user
- * - scope: Access permissions
- * - iat: Issued at
- * - exp: Expiration (for offline mode max validity)
- * - offline_max_until: Max time for offline access
+ * Credential payload contains ONLY immutable fields to prevent token invalidation:
+ * - card_id: Internal card ID (immutable)
+ * - card_uid: Hardware UID (immutable)
+ * - iat: Issued at timestamp
+ * - exp: Expiration timestamp
+ *
+ * Dynamic fields (user_id, policy, etc.) are validated from database in real-time
+ * This ensures token remains valid even when user/policy changes
  */
 const generateCredential = (card, user, options = {}) => {
   const now = Math.floor(Date.now() / 1000);
   const expiresIn = options.expiresIn || CREDENTIAL_EXPIRES_IN || 86400 * 30; // Default 30 days
 
   const payload = {
-    // Card info
+    // ONLY immutable card identifiers
     card_id: card.card_id,
     card_uid: card.card_uid,
-
-    // User info
-    user_id: user?.id || user?.user_id || null,
-    user_name: user?.name || user?.displayName || null,
-
-    // Access scope
-    scope: card.scope || [],
-    access_level: card.policy?.access_level || 'staff',
-
-    // Policy
-    allowed_doors: card.policy?.allowed_doors || ['*'],
 
     // Timestamps
     iat: now,
     exp: now + expiresIn,
-    offline_max_until: now + (options.offlineMaxSec || 86400), // Default 24h offline
   };
 
   const raw = createCardCredential(payload);
 
   return {
-    format: 'jwt',
-    alg: 'EdDSA',
+    format: "jwt",
+    alg: "EdDSA",
     raw,
-    exp: new Date((now + expiresIn) * 1000).toISOString()
+    exp: new Date((now + expiresIn) * 1000).toISOString(),
   };
 };
 
@@ -68,8 +60,8 @@ const verifyCredential = (credentialRaw, cardUid = null) => {
   if (cardUid && result.payload.card_uid !== cardUid) {
     return {
       valid: false,
-      error: 'Card UID mismatch',
-      payload: result.payload
+      error: "Card UID mismatch",
+      payload: result.payload,
     };
   }
 
@@ -106,13 +98,13 @@ const shouldRotateCredential = (payload) => {
  */
 const parseCredential = (credentialRaw) => {
   try {
-    const parts = credentialRaw.split('.');
+    const parts = credentialRaw.split(".");
     if (parts.length !== 3) {
       return null;
     }
 
-    const header = JSON.parse(Buffer.from(parts[0], 'base64url').toString());
-    const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString());
+    const header = JSON.parse(Buffer.from(parts[0], "base64url").toString());
+    const payload = JSON.parse(Buffer.from(parts[1], "base64url").toString());
 
     return { header, payload };
   } catch (error) {
@@ -124,5 +116,5 @@ module.exports = {
   generateCredential,
   verifyCredential,
   shouldRotateCredential,
-  parseCredential
+  parseCredential,
 };
