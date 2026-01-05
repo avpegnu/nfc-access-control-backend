@@ -1,4 +1,5 @@
 const doorsService = require("../services/doors.service");
+const realtimeService = require("../services/realtime.service");
 const { success, successMessage } = require("../utils/response");
 const logger = require("../utils/logger");
 
@@ -71,6 +72,16 @@ const updateStatus = async (req, res, next) => {
     const { isOpen, isOnline } = req.body;
 
     const result = await doorsService.updateStatus(id, { isOpen, isOnline });
+
+    // Broadcast to all connected clients via SSE
+    realtimeService.broadcast("door_status", {
+      doorId: id,
+      status: result.status,
+    });
+
+    logger.info(
+      `Door ${id} status broadcasted: isOpen=${isOpen}, isOnline=${isOnline}`
+    );
 
     return success(res, result);
   } catch (err) {

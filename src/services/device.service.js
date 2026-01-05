@@ -1,10 +1,14 @@
-const jwt = require('jsonwebtoken');
-const { v4: uuidv4 } = require('uuid');
-const firebaseService = require('./firebase.service');
-const { getJwtVerificationConfig } = require('../config/crypto');
-const { DEVICE_JWT_SECRET, DEVICE_JWT_EXPIRES_IN, DEVICE_SECRETS } = require('../config/env');
+const jwt = require("jsonwebtoken");
+const { v4: uuidv4 } = require("uuid");
+const firebaseService = require("./firebase.service");
+const { getJwtVerificationConfig } = require("../config/crypto");
+const {
+  DEVICE_JWT_SECRET,
+  DEVICE_JWT_EXPIRES_IN,
+  DEVICE_SECRETS,
+} = require("../config/env");
 
-const DEVICES_PATH = 'devices';
+const DEVICES_PATH = "devices";
 
 /**
  * Register a new device or re-register existing device
@@ -13,9 +17,15 @@ const registerDevice = async (data) => {
   const { device_id, secret, hardware_type, firmware_version, door_id } = data;
 
   // Validate device secret
-  const validSecret = DEVICE_SECRETS.find(s => s.device_id === device_id && s.secret === secret);
+  const validSecret = DEVICE_SECRETS.find(
+    (s) => s.device_id === device_id && s.secret === secret
+  );
   if (!validSecret) {
-    throw { code: 'INVALID_SECRET', message: 'Device ID hoặc secret không hợp lệ', status: 401 };
+    throw {
+      code: "INVALID_SECRET",
+      message: "Device ID hoặc secret không hợp lệ",
+      status: 401,
+    };
   }
 
   // Check if device exists
@@ -28,7 +38,7 @@ const registerDevice = async (data) => {
       firmware_version,
       door_id,
       last_registered_at: new Date().toISOString(),
-      status: 'active'
+      status: "active",
     };
     await firebaseService.update(`${DEVICES_PATH}/${device_id}`, updateData);
     device = { ...device, ...updateData };
@@ -39,26 +49,26 @@ const registerDevice = async (data) => {
       hardware_type,
       firmware_version,
       door_id,
-      status: 'active',
+      status: "active",
       created_at: new Date().toISOString(),
       last_registered_at: new Date().toISOString(),
       config: {
         relay_open_ms: 3000,
         offline_mode: {
           enabled: true,
-          cache_ttl_sec: 86400
-        }
-      }
+          cache_ttl_sec: 86400,
+        },
+      },
     });
   }
 
   // Generate device JWT token
   const deviceToken = jwt.sign(
     {
-      type: 'device',
+      type: "device",
       device_id,
       door_id,
-      hardware_type
+      hardware_type,
     },
     DEVICE_JWT_SECRET,
     { expiresIn: DEVICE_JWT_EXPIRES_IN }
@@ -70,9 +80,9 @@ const registerDevice = async (data) => {
       relay_open_ms: 3000,
       offline_mode: {
         enabled: true,
-        cache_ttl_sec: 86400
-      }
-    }
+        cache_ttl_sec: 86400,
+      },
+    },
   };
 };
 
@@ -83,17 +93,23 @@ const getDeviceConfig = async (deviceId) => {
   const device = await firebaseService.getById(DEVICES_PATH, deviceId);
 
   if (!device) {
-    throw { code: 'DEVICE_NOT_FOUND', message: 'Thiết bị không tồn tại', status: 404 };
+    throw {
+      code: "DEVICE_NOT_FOUND",
+      message: "Thiết bị không tồn tại",
+      status: 404,
+    };
   }
 
   // Get offline whitelist (cards that can be verified offline)
-  const allCards = await firebaseService.getAll('cards');
-  const cards = allCards.filter(card => card.offline_enabled === true && card.status === 'active');
+  const allCards = await firebaseService.getAll("cards");
+  const cards = allCards.filter(
+    (card) => card.offline_enabled === true && card.status === "active"
+  );
 
-  const offlineWhitelist = cards.map(card => ({
+  const offlineWhitelist = cards.map((card) => ({
     card_id: card.card_id,
     user_id: card.user_id,
-    valid_until: card.valid_until || null
+    valid_until: card.valid_until || null,
   }));
 
   // Calculate cache expiration
@@ -105,10 +121,10 @@ const getDeviceConfig = async (deviceId) => {
     relay_open_ms: device.config?.relay_open_ms || 3000,
     offline_mode: {
       enabled: device.config?.offline_mode?.enabled || false,
-      cache_expire_at: cacheExpireAt
+      cache_expire_at: cacheExpireAt,
     },
     offline_whitelist: offlineWhitelist,
-    jwt_verification: getJwtVerificationConfig()
+    jwt_verification: getJwtVerificationConfig(),
   };
 };
 
@@ -121,17 +137,21 @@ const processHeartbeat = async (deviceId, data) => {
   const device = await firebaseService.getById(DEVICES_PATH, deviceId);
 
   if (!device) {
-    throw { code: 'DEVICE_NOT_FOUND', message: 'Thiết bị không tồn tại', status: 404 };
+    throw {
+      code: "DEVICE_NOT_FOUND",
+      message: "Thiết bị không tồn tại",
+      status: 404,
+    };
   }
 
   // Update device status
   await firebaseService.update(`${DEVICES_PATH}/${deviceId}`, {
     last_heartbeat_at: timestamp,
     last_status: status,
-    online: true
+    online: true,
   });
 
-  return { status: 'OK' };
+  return { status: "OK" };
 };
 
 /**
@@ -141,7 +161,11 @@ const getDevice = async (deviceId) => {
   const device = await firebaseService.getById(DEVICES_PATH, deviceId);
 
   if (!device) {
-    throw { code: 'DEVICE_NOT_FOUND', message: 'Thiết bị không tồn tại', status: 404 };
+    throw {
+      code: "DEVICE_NOT_FOUND",
+      message: "Thiết bị không tồn tại",
+      status: 404,
+    };
   }
 
   return device;
@@ -154,15 +178,21 @@ const updateDeviceConfig = async (deviceId, config) => {
   const device = await firebaseService.getById(DEVICES_PATH, deviceId);
 
   if (!device) {
-    throw { code: 'DEVICE_NOT_FOUND', message: 'Thiết bị không tồn tại', status: 404 };
+    throw {
+      code: "DEVICE_NOT_FOUND",
+      message: "Thiết bị không tồn tại",
+      status: 404,
+    };
   }
 
   const updatedConfig = {
     ...device.config,
-    ...config
+    ...config,
   };
 
-  await firebaseService.update(`${DEVICES_PATH}/${deviceId}`, { config: updatedConfig });
+  await firebaseService.update(`${DEVICES_PATH}/${deviceId}`, {
+    config: updatedConfig,
+  });
 
   return updatedConfig;
 };
@@ -180,5 +210,5 @@ module.exports = {
   processHeartbeat,
   getDevice,
   updateDeviceConfig,
-  listDevices
+  listDevices,
 };
