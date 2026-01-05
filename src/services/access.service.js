@@ -1,10 +1,11 @@
 const firebaseService = require("./firebase.service");
 const cardService = require("./card.service");
 const credentialService = require("./credential.service");
+const doorsService = require("./doors.service");
 const logger = require("../utils/logger");
 
 const ACCESS_LOGS_PATH = "access_logs";
-
+// const ENROLL_TIMEOUT_MS = 24 * 60 * 60 * 1000; // 24 hours
 /**
  * Access control service
  * Handles NFC card verification, credential management, and access logging
@@ -192,6 +193,13 @@ class AccessService {
 
           newCredential = credentialService.generateCredential(card, user);
 
+          // Send unlock command to door
+          await doorsService.sendCommand(
+            door_id,
+            "unlock",
+            `card_${card.card_id}`
+          );
+
           await this.logAccess({
             door_id,
             card_id: card.card_id,
@@ -259,6 +267,31 @@ class AccessService {
           return { result, reason };
         }
 
+        // // Check enrollment timeout (24h since assigned)
+        // if (card.assigned_at) {
+        //   const enrollAge = Date.now() - new Date(card.assigned_at).getTime();
+        //   if (enrollAge > ENROLL_TIMEOUT_MS) {
+        //     result = "DENY";
+        //     reason = "ENROLL_TIMEOUT";
+        //     await this.logAccess({
+        //       door_id,
+        //       card_id: card.card_id,
+        //       card_uid,
+        //       result,
+        //       reason,
+        //       user_id: card.user_id,
+        //       device_id,
+        //       enroll_timeout: true,
+        //     });
+        //     // Auto-disable enroll_mode if timeout
+        //     await cardService.updateCard(card.card_id, {
+        //       enroll_mode: false,
+        //       status: "inactive",
+        //     });
+        //     return { result, reason };
+        //   }
+        // }
+
         // User assigned and in enroll mode - ALLOW, issue credential, then turn off enroll_mode
         result = "ALLOW";
         reason = "ENROLL_MODE";
@@ -271,6 +304,13 @@ class AccessService {
 
         // Turn off enroll_mode after first successful tap
         await cardService.updateCard(card.card_id, { enroll_mode: false });
+
+        // Send unlock command to door
+        await doorsService.sendCommand(
+          door_id,
+          "unlock",
+          `card_${card.card_id}_enroll`
+        );
 
         await this.logAccess({
           door_id,
@@ -368,6 +408,13 @@ class AccessService {
         result = "ALLOW";
         reason = "CREDENTIAL_ROTATED";
         newCredential = credentialService.generateCredential(card, user);
+
+        // Send unlock command to door
+        await doorsService.sendCommand(
+          door_id,
+          "unlock",
+          `card_${card.card_id}`
+        );
 
         await this.logAccess({
           door_id,
