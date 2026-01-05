@@ -186,11 +186,11 @@ class AccessService {
             return { result, reason };
           }
 
-          // Access granted - rotate credential
+          // Access granted - NO need to rotate credential if still valid
           result = "ALLOW";
           reason = "ACCESS_GRANTED";
 
-          newCredential = credentialService.generateCredential(card, user);
+          // newCredential = credentialService.generateCredential(card, user);
 
           await this.logAccess({
             door_id,
@@ -201,7 +201,7 @@ class AccessService {
             user_id: card.user_id,
             user_name: user?.name || user?.displayName || null,
             device_id,
-            credential_rotated: true,
+            credential_rotated: false,
           });
 
           return {
@@ -215,7 +215,7 @@ class AccessService {
               access_level: policy.access_level,
               valid_until: policy.valid_until || null,
             },
-            credential: newCredential,
+            // credential: newCredential, // Don't return new credential
           };
         }
 
