@@ -1,9 +1,11 @@
 require('dotenv').config();
 
-const requiredEnvVars = [
-  'JWT_SECRET',
-  'FIREBASE_DATABASE_URL'
-];
+// Check if running in mock mode
+const MOCK_MODE = process.env.MOCK_MODE === 'true';
+
+const requiredEnvVars = MOCK_MODE 
+  ? ['JWT_SECRET']  // Only JWT needed in mock mode
+  : ['JWT_SECRET', 'FIREBASE_DATABASE_URL'];
 
 // Validate required environment variables
 requiredEnvVars.forEach((envVar) => {
@@ -39,6 +41,7 @@ if (!allowedOrigins.includes(localOrigin)) {
 module.exports = {
   NODE_ENV: process.env.NODE_ENV || 'development',
   PORT: parseInt(process.env.PORT, 10) || 3001,
+  MOCK_MODE,
 
   // JWT for Frontend Auth
   JWT_SECRET: process.env.JWT_SECRET,

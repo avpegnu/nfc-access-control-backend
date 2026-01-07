@@ -1,5 +1,6 @@
 const { getFirebaseAuth } = require('../config/firebase');
 const { generateToken, blacklistToken } = require('../config/jwt');
+const { MOCK_MODE } = require('../config/env');
 const logger = require('../utils/logger');
 
 /**
@@ -13,6 +14,37 @@ class AuthService {
    */
   async login(email, password) {
     try {
+      // MOCK MODE: Accept any login with test credentials
+      if (MOCK_MODE) {
+        logger.info(`🔶 MOCK LOGIN: ${email}`);
+        
+        // Accept test@test.com / 123456 or any email with password "123456"
+        if (password !== '123456') {
+          const error = new Error('INVALID_PASSWORD');
+          error.code = 'auth/wrong-password';
+          throw error;
+        }
+
+        const uid = 'mock_user_' + email.split('@')[0];
+        const token = generateToken({
+          uid,
+          email,
+          displayName: email.split('@')[0],
+          role: 'admin'
+        });
+
+        return {
+          token,
+          expiresIn: 86400,
+          user: {
+            uid,
+            email,
+            displayName: email.split('@')[0],
+            role: 'admin'
+          }
+        };
+      }
+
       // Use Firebase REST API to verify email/password
       const FIREBASE_API_KEY = process.env.FIREBASE_WEB_API_KEY;
 

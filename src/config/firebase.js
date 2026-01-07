@@ -3,8 +3,15 @@ const fs = require('fs');
 const {
   FIREBASE_SERVICE_ACCOUNT,
   FIREBASE_SERVICE_ACCOUNT_PATH,
-  FIREBASE_DATABASE_URL
+  FIREBASE_DATABASE_URL,
+  MOCK_MODE
 } = require('./env');
+
+// Use mock Firebase in mock mode
+if (MOCK_MODE) {
+  module.exports = require('./firebase.mock');
+  return;
+}
 
 let firebaseApp = null;
 
