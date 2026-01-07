@@ -11,12 +11,29 @@ class FirebaseService {
 
   /**
    * Get database instance (lazy initialization)
+   * @throws {Error} if Firebase is not initialized
    */
   getDb() {
     if (!this.db) {
-      this.db = getFirebaseDatabase();
+      try {
+        this.db = getFirebaseDatabase();
+      } catch (error) {
+        throw new Error(`Firebase not initialized: ${error.message}`);
+      }
     }
     return this.db;
+  }
+
+  /**
+   * Check if Firebase is ready
+   */
+  isReady() {
+    try {
+      this.getDb();
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   /**
