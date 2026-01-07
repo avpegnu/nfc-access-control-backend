@@ -31,7 +31,7 @@ class RealtimeService {
 
     // Subscribe to new access logs
     const unsubAccessLogs = firebaseService.subscribeChild(
-      "accessLogs",
+      "access_logs",
       "child_added",
       (log) => {
         this.broadcast("access_log", log);
