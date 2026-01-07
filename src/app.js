@@ -58,6 +58,19 @@ app.use((req, res, next) => {
 // Rate limiting (apply to all API routes)
 app.use('/api', apiLimiter);
 
+// Health check at root level (as shown in server startup log)
+app.get('/health', (_req, res) => {
+  res.json({
+    success: true,
+    data: {
+      status: 'healthy',
+      timestamp: Date.now(),
+      uptime: process.uptime(),
+      version: '1.4.0'
+    }
+  });
+});
+
 // Swagger API documentation (Light mode)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOptions));
 
