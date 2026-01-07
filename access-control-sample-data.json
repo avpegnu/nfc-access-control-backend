@@ -1,0 +1,2005 @@
+{
+  "accessLogs": [
+    {
+      "id": 1,
+      "userId": "USR001",
+      "cardId": "NFC0000001",
+      "accessPointId": "AP001",
+      "timestamp": "2026-01-07T01:02:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 2,
+      "userId": "USR002",
+      "cardId": "NFC0000002",
+      "accessPointId": "AP005",
+      "timestamp": "2026-01-07T01:04:00.000+07:00",
+      "status": "denied",
+      "method": "nfc"
+    },
+    {
+      "id": 3,
+      "userId": "USR003",
+      "cardId": "NFC0000003",
+      "accessPointId": "AP005",
+      "timestamp": "2026-01-07T01:09:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 4,
+      "userId": "USR004",
+      "cardId": "NFC0000004",
+      "accessPointId": "AP001",
+      "timestamp": "2026-01-07T01:12:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 5,
+      "userId": "USR005",
+      "cardId": "NFC0000005",
+      "accessPointId": "AP001",
+      "timestamp": "2026-01-07T01:15:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 6,
+      "userId": "USR006",
+      "cardId": "NFC0000006",
+      "accessPointId": "AP005",
+      "timestamp": "2026-01-07T01:12:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 7,
+      "userId": "USR007",
+      "cardId": "NFC0000007",
+      "accessPointId": "AP001",
+      "timestamp": "2026-01-07T01:07:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 8,
+      "userId": "USR008",
+      "cardId": "NFC0000008",
+      "accessPointId": "AP003",
+      "timestamp": "2026-01-07T01:24:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 9,
+      "userId": "USR009",
+      "cardId": "NFC0000009",
+      "accessPointId": "AP002",
+      "timestamp": "2026-01-07T01:27:00.000+07:00",
+      "status": "denied",
+      "method": "nfc"
+    },
+    {
+      "id": 10,
+      "userId": "USR010",
+      "cardId": "NFC000000A",
+      "accessPointId": "AP001",
+      "timestamp": "2026-01-07T01:20:00.000+07:00",
+      "status": "denied",
+      "method": "nfc"
+    },
+    {
+      "id": 11,
+      "userId": "USR011",
+      "cardId": "NFC000000B",
+      "accessPointId": "AP003",
+      "timestamp": "2026-01-07T01:22:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 12,
+      "userId": "USR012",
+      "cardId": "NFC000000C",
+      "accessPointId": "AP004",
+      "timestamp": "2026-01-07T01:36:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 13,
+      "userId": "USR013",
+      "cardId": "NFC000000D",
+      "accessPointId": "AP002",
+      "timestamp": "2026-01-07T01:26:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 14,
+      "userId": "USR014",
+      "cardId": "NFC000000E",
+      "accessPointId": "AP004",
+      "timestamp": "2026-01-07T01:28:00.000+07:00",
+      "status": "denied",
+      "method": "nfc"
+    },
+    {
+      "id": 15,
+      "userId": "USR015",
+      "cardId": "NFC000000F",
+      "accessPointId": "AP001",
+      "timestamp": "2026-01-07T01:30:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 16,
+      "userId": "USR016",
+      "cardId": "NFC0000010",
+      "accessPointId": "AP005",
+      "timestamp": "2026-01-07T01:16:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 17,
+      "userId": "USR017",
+      "cardId": "NFC0000011",
+      "accessPointId": "AP004",
+      "timestamp": "2026-01-07T01:17:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 18,
+      "userId": "USR018",
+      "cardId": "NFC0000012",
+      "accessPointId": "AP003",
+      "timestamp": "2026-01-07T01:36:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 19,
+      "userId": "USR019",
+      "cardId": "NFC0000013",
+      "accessPointId": "AP005",
+      "timestamp": "2026-01-07T01:57:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 20,
+      "userId": "USR020",
+      "cardId": "NFC0000014",
+      "accessPointId": "AP002",
+      "timestamp": "2026-01-07T01:40:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 21,
+      "userId": "USR021",
+      "cardId": "NFC0000015",
+      "accessPointId": "AP004",
+      "timestamp": "2026-01-07T01:21:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 22,
+      "userId": "USR022",
+      "cardId": "NFC0000016",
+      "accessPointId": "AP002",
+      "timestamp": "2026-01-07T02:06:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 23,
+      "userId": "USR023",
+      "cardId": "NFC0000017",
+      "accessPointId": "AP003",
+      "timestamp": "2026-01-07T02:09:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 24,
+      "userId": "USR024",
+      "cardId": "NFC0000018",
+      "accessPointId": "AP005",
+      "timestamp": "2026-01-07T01:48:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 25,
+      "userId": "USR025",
+      "cardId": "NFC0000019",
+      "accessPointId": "AP003",
+      "timestamp": "2026-01-07T02:15:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 26,
+      "userId": "USR026",
+      "cardId": "NFC000001A",
+      "accessPointId": "AP002",
+      "timestamp": "2026-01-07T01:26:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 27,
+      "userId": "USR027",
+      "cardId": "NFC000001B",
+      "accessPointId": "AP004",
+      "timestamp": "2026-01-07T01:27:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 28,
+      "userId": "USR028",
+      "cardId": "NFC000001C",
+      "accessPointId": "AP005",
+      "timestamp": "2026-01-07T01:56:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 29,
+      "userId": "USR029",
+      "cardId": "NFC000001D",
+      "accessPointId": "AP004",
+      "timestamp": "2026-01-07T02:27:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 30,
+      "userId": "USR030",
+      "cardId": "NFC000001E",
+      "accessPointId": "AP004",
+      "timestamp": "2026-01-07T01:30:00.000+07:00",
+      "status": "denied",
+      "method": "nfc"
+    },
+    {
+      "id": 31,
+      "userId": "USR031",
+      "cardId": "NFC000001F",
+      "accessPointId": "AP003",
+      "timestamp": "2026-01-07T02:02:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 32,
+      "userId": "USR032",
+      "cardId": "NFC0000020",
+      "accessPointId": "AP002",
+      "timestamp": "2026-01-07T02:36:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 33,
+      "userId": "USR033",
+      "cardId": "NFC0000021",
+      "accessPointId": "AP002",
+      "timestamp": "2026-01-07T01:33:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 34,
+      "userId": "USR034",
+      "cardId": "NFC0000022",
+      "accessPointId": "AP003",
+      "timestamp": "2026-01-07T01:34:00.000+07:00",
+      "status": "denied",
+      "method": "nfc"
+    },
+    {
+      "id": 35,
+      "userId": "USR035",
+      "cardId": "NFC0000023",
+      "accessPointId": "AP005",
+      "timestamp": "2026-01-07T02:10:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 36,
+      "userId": "USR036",
+      "cardId": "NFC0000024",
+      "accessPointId": "AP001",
+      "timestamp": "2026-01-07T02:48:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 37,
+      "userId": "USR037",
+      "cardId": "NFC0000025",
+      "accessPointId": "AP005",
+      "timestamp": "2026-01-07T02:14:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 38,
+      "userId": "USR038",
+      "cardId": "NFC0000026",
+      "accessPointId": "AP001",
+      "timestamp": "2026-01-07T02:16:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 39,
+      "userId": "USR039",
+      "cardId": "NFC0000027",
+      "accessPointId": "AP005",
+      "timestamp": "2026-01-07T01:39:00.000+07:00",
+      "status": "denied",
+      "method": "nfc"
+    },
+    {
+      "id": 40,
+      "userId": "USR040",
+      "cardId": "NFC0000028",
+      "accessPointId": "AP002",
+      "timestamp": "2026-01-07T02:20:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 41,
+      "userId": "USR041",
+      "cardId": "NFC0000029",
+      "accessPointId": "AP002",
+      "timestamp": "2026-01-07T01:41:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 42,
+      "userId": "USR042",
+      "cardId": "NFC000002A",
+      "accessPointId": "AP003",
+      "timestamp": "2026-01-07T02:24:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 43,
+      "userId": "USR043",
+      "cardId": "NFC000002B",
+      "accessPointId": "AP001",
+      "timestamp": "2026-01-07T03:09:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 44,
+      "userId": "USR044",
+      "cardId": "NFC000002C",
+      "accessPointId": "AP003",
+      "timestamp": "2026-01-07T03:12:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 45,
+      "userId": "USR045",
+      "cardId": "NFC000002D",
+      "accessPointId": "AP001",
+      "timestamp": "2026-01-07T03:15:00.000+07:00",
+      "status": "denied",
+      "method": "nfc"
+    },
+    {
+      "id": 46,
+      "userId": "USR046",
+      "cardId": "NFC000002E",
+      "accessPointId": "AP002",
+      "timestamp": "2026-01-07T01:46:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 47,
+      "userId": "USR047",
+      "cardId": "NFC000002F",
+      "accessPointId": "AP001",
+      "timestamp": "2026-01-07T03:21:00.000+07:00",
+      "status": "denied",
+      "method": "nfc"
+    },
+    {
+      "id": 48,
+      "userId": "USR048",
+      "cardId": "NFC0000030",
+      "accessPointId": "AP005",
+      "timestamp": "2026-01-07T02:36:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 49,
+      "userId": "USR049",
+      "cardId": "NFC0000031",
+      "accessPointId": "AP005",
+      "timestamp": "2026-01-07T01:49:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 50,
+      "userId": "USR050",
+      "cardId": "NFC0000032",
+      "accessPointId": "AP004",
+      "timestamp": "2026-01-07T02:40:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 51,
+      "userId": "USR051",
+      "cardId": "NFC0000033",
+      "accessPointId": "AP001",
+      "timestamp": "2026-01-07T03:33:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 52,
+      "userId": "USR052",
+      "cardId": "NFC0000034",
+      "accessPointId": "AP002",
+      "timestamp": "2026-01-07T02:44:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 53,
+      "userId": "USR053",
+      "cardId": "NFC0000035",
+      "accessPointId": "AP001",
+      "timestamp": "2026-01-07T03:39:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 54,
+      "userId": "USR054",
+      "cardId": "NFC0000036",
+      "accessPointId": "AP002",
+      "timestamp": "2026-01-07T01:54:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 55,
+      "userId": "USR055",
+      "cardId": "NFC0000037",
+      "accessPointId": "AP003",
+      "timestamp": "2026-01-07T03:45:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 56,
+      "userId": "USR056",
+      "cardId": "NFC0000038",
+      "accessPointId": "AP005",
+      "timestamp": "2026-01-07T03:48:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 57,
+      "userId": "USR057",
+      "cardId": "NFC0000039",
+      "accessPointId": "AP001",
+      "timestamp": "2026-01-07T02:54:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 58,
+      "userId": "USR058",
+      "cardId": "NFC000003A",
+      "accessPointId": "AP002",
+      "timestamp": "2026-01-07T02:56:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 59,
+      "userId": "USR059",
+      "cardId": "NFC000003B",
+      "accessPointId": "AP002",
+      "timestamp": "2026-01-07T02:58:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 60,
+      "userId": "USR060",
+      "cardId": "NFC000003C",
+      "accessPointId": "AP004",
+      "timestamp": "2026-01-07T03:00:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 61,
+      "userId": "USR061",
+      "cardId": "NFC000003D",
+      "accessPointId": "AP002",
+      "timestamp": "2026-01-07T03:02:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 62,
+      "userId": "USR062",
+      "cardId": "NFC000003E",
+      "accessPointId": "AP002",
+      "timestamp": "2026-01-07T04:06:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 63,
+      "userId": "USR063",
+      "cardId": "NFC000003F",
+      "accessPointId": "AP003",
+      "timestamp": "2026-01-07T03:06:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 64,
+      "userId": "USR064",
+      "cardId": "NFC0000040",
+      "accessPointId": "AP005",
+      "timestamp": "2026-01-07T02:04:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 65,
+      "userId": "USR065",
+      "cardId": "NFC0000041",
+      "accessPointId": "AP005",
+      "timestamp": "2026-01-07T03:10:00.000+07:00",
+      "status": "denied",
+      "method": "nfc"
+    },
+    {
+      "id": 66,
+      "userId": "USR066",
+      "cardId": "NFC0000042",
+      "accessPointId": "AP005",
+      "timestamp": "2026-01-07T04:18:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 67,
+      "userId": "USR067",
+      "cardId": "NFC0000043",
+      "accessPointId": "AP001",
+      "timestamp": "2026-01-07T02:07:00.000+07:00",
+      "status": "denied",
+      "method": "nfc"
+    },
+    {
+      "id": 68,
+      "userId": "USR068",
+      "cardId": "NFC0000044",
+      "accessPointId": "AP005",
+      "timestamp": "2026-01-07T04:24:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    },
+    {
+      "id": 69,
+      "userId": "USR069",
+      "cardId": "NFC0000045",
+      "accessPointId": "AP002",
+      "timestamp": "2026-01-07T02:09:00.000+07:00",
+      "status": "denied",
+      "method": "nfc"
+    },
+    {
+      "id": 70,
+      "userId": "USR070",
+      "cardId": "NFC0000046",
+      "accessPointId": "AP001",
+      "timestamp": "2026-01-07T04:30:00.000+07:00",
+      "status": "granted",
+      "method": "nfc"
+    }
+  ],
+  "users": [
+    {
+      "id": "USR001",
+      "name": "Ngo Van B",
+      "email": "user1@company.com",
+      "department": "Sales",
+      "role": "employee",
+      "active": true,
+      "createdAt": "2024-12-31T18:00:00.000+07:00"
+    },
+    {
+      "id": "USR002",
+      "name": "Vu Huy C",
+      "email": "user2@company.com",
+      "department": "Sales",
+      "role": "employee",
+      "active": true,
+      "createdAt": "2024-12-31T19:00:00.000+07:00"
+    },
+    {
+      "id": "USR003",
+      "name": "Do Khanh D",
+      "email": "user3@company.com",
+      "department": "Marketing",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2024-12-31T20:00:00.000+07:00"
+    },
+    {
+      "id": "USR004",
+      "name": "Nguyen Quan E",
+      "email": "user4@company.com",
+      "department": "HR",
+      "role": "manager",
+      "active": true,
+      "createdAt": "2024-12-31T21:00:00.000+07:00"
+    },
+    {
+      "id": "USR005",
+      "name": "Tran Minh F",
+      "email": "user5@company.com",
+      "department": "Engineering",
+      "role": "employee",
+      "active": true,
+      "createdAt": "2024-12-31T22:00:00.000+07:00"
+    },
+    {
+      "id": "USR006",
+      "name": "Pham Van G",
+      "email": "user6@company.com",
+      "department": "Engineering",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2024-12-31T23:00:00.000+07:00"
+    },
+    {
+      "id": "USR007",
+      "name": "Bui Tuan H",
+      "email": "user7@company.com",
+      "department": "Sales",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2025-01-01T00:00:00.000+07:00"
+    },
+    {
+      "id": "USR008",
+      "name": "Vu Van I",
+      "email": "user8@company.com",
+      "department": "HR",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2025-01-01T01:00:00.000+07:00"
+    },
+    {
+      "id": "USR009",
+      "name": "Dang Tuan J",
+      "email": "user9@company.com",
+      "department": "HR",
+      "role": "manager",
+      "active": true,
+      "createdAt": "2025-01-01T02:00:00.000+07:00"
+    },
+    {
+      "id": "USR010",
+      "name": "Le Van K",
+      "email": "user10@company.com",
+      "department": "HR",
+      "role": "contractor",
+      "active": true,
+      "createdAt": "2025-01-01T03:00:00.000+07:00"
+    },
+    {
+      "id": "USR011",
+      "name": "Dang Linh L",
+      "email": "user11@company.com",
+      "department": "Marketing",
+      "role": "manager",
+      "active": true,
+      "createdAt": "2025-01-01T04:00:00.000+07:00"
+    },
+    {
+      "id": "USR012",
+      "name": "Vu Thi M",
+      "email": "user12@company.com",
+      "department": "Marketing",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2025-01-01T05:00:00.000+07:00"
+    },
+    {
+      "id": "USR013",
+      "name": "Le Duc N",
+      "email": "user13@company.com",
+      "department": "Marketing",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2025-01-01T06:00:00.000+07:00"
+    },
+    {
+      "id": "USR014",
+      "name": "Hoang Minh O",
+      "email": "user14@company.com",
+      "department": "Finance",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2025-01-01T07:00:00.000+07:00"
+    },
+    {
+      "id": "USR015",
+      "name": "Bui Tuan P",
+      "email": "user15@company.com",
+      "department": "Marketing",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2025-01-01T08:00:00.000+07:00"
+    },
+    {
+      "id": "USR016",
+      "name": "Bui Van Q",
+      "email": "user16@company.com",
+      "department": "Finance",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2025-01-01T09:00:00.000+07:00"
+    },
+    {
+      "id": "USR017",
+      "name": "Pham Minh R",
+      "email": "user17@company.com",
+      "department": "Sales",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2025-01-01T10:00:00.000+07:00"
+    },
+    {
+      "id": "USR018",
+      "name": "Dang Huy S",
+      "email": "user18@company.com",
+      "department": "Finance",
+      "role": "contractor",
+      "active": true,
+      "createdAt": "2025-01-01T11:00:00.000+07:00"
+    },
+    {
+      "id": "USR019",
+      "name": "Hoang Linh T",
+      "email": "user19@company.com",
+      "department": "HR",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2025-01-01T12:00:00.000+07:00"
+    },
+    {
+      "id": "USR020",
+      "name": "Nguyen Van U",
+      "email": "user20@company.com",
+      "department": "HR",
+      "role": "admin",
+      "active": false,
+      "createdAt": "2025-01-01T13:00:00.000+07:00"
+    },
+    {
+      "id": "USR021",
+      "name": "Hoang Anh V",
+      "email": "user21@company.com",
+      "department": "Operations",
+      "role": "contractor",
+      "active": true,
+      "createdAt": "2025-01-01T14:00:00.000+07:00"
+    },
+    {
+      "id": "USR022",
+      "name": "Hoang Huy W",
+      "email": "user22@company.com",
+      "department": "Sales",
+      "role": "contractor",
+      "active": true,
+      "createdAt": "2025-01-01T15:00:00.000+07:00"
+    },
+    {
+      "id": "USR023",
+      "name": "Hoang Minh X",
+      "email": "user23@company.com",
+      "department": "Operations",
+      "role": "contractor",
+      "active": true,
+      "createdAt": "2025-01-01T16:00:00.000+07:00"
+    },
+    {
+      "id": "USR024",
+      "name": "Pham Khanh Y",
+      "email": "user24@company.com",
+      "department": "Marketing",
+      "role": "contractor",
+      "active": true,
+      "createdAt": "2025-01-01T17:00:00.000+07:00"
+    },
+    {
+      "id": "USR025",
+      "name": "Bui Duc Z",
+      "email": "user25@company.com",
+      "department": "IT",
+      "role": "manager",
+      "active": true,
+      "createdAt": "2025-01-01T18:00:00.000+07:00"
+    },
+    {
+      "id": "USR026",
+      "name": "Dang Quan A",
+      "email": "user26@company.com",
+      "department": "IT",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2025-01-01T19:00:00.000+07:00"
+    },
+    {
+      "id": "USR027",
+      "name": "Vu Quan B",
+      "email": "user27@company.com",
+      "department": "Engineering",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2025-01-01T20:00:00.000+07:00"
+    },
+    {
+      "id": "USR028",
+      "name": "Dang Minh C",
+      "email": "user28@company.com",
+      "department": "IT",
+      "role": "employee",
+      "active": true,
+      "createdAt": "2025-01-01T21:00:00.000+07:00"
+    },
+    {
+      "id": "USR029",
+      "name": "Vu Huy D",
+      "email": "user29@company.com",
+      "department": "Sales",
+      "role": "manager",
+      "active": true,
+      "createdAt": "2025-01-01T22:00:00.000+07:00"
+    },
+    {
+      "id": "USR030",
+      "name": "Do Anh E",
+      "email": "user30@company.com",
+      "department": "Sales",
+      "role": "contractor",
+      "active": true,
+      "createdAt": "2025-01-01T23:00:00.000+07:00"
+    },
+    {
+      "id": "USR031",
+      "name": "Pham Quan F",
+      "email": "user31@company.com",
+      "department": "Engineering",
+      "role": "manager",
+      "active": true,
+      "createdAt": "2025-01-02T00:00:00.000+07:00"
+    },
+    {
+      "id": "USR032",
+      "name": "Do Minh G",
+      "email": "user32@company.com",
+      "department": "HR",
+      "role": "manager",
+      "active": true,
+      "createdAt": "2025-01-02T01:00:00.000+07:00"
+    },
+    {
+      "id": "USR033",
+      "name": "Tran Thi H",
+      "email": "user33@company.com",
+      "department": "Operations",
+      "role": "employee",
+      "active": true,
+      "createdAt": "2025-01-02T02:00:00.000+07:00"
+    },
+    {
+      "id": "USR034",
+      "name": "Hoang Linh I",
+      "email": "user34@company.com",
+      "department": "HR",
+      "role": "employee",
+      "active": true,
+      "createdAt": "2025-01-02T03:00:00.000+07:00"
+    },
+    {
+      "id": "USR035",
+      "name": "Hoang Duc J",
+      "email": "user35@company.com",
+      "department": "Operations",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2025-01-02T04:00:00.000+07:00"
+    },
+    {
+      "id": "USR036",
+      "name": "Le Duc K",
+      "email": "user36@company.com",
+      "department": "Sales",
+      "role": "manager",
+      "active": true,
+      "createdAt": "2025-01-02T05:00:00.000+07:00"
+    },
+    {
+      "id": "USR037",
+      "name": "Do Linh L",
+      "email": "user37@company.com",
+      "department": "Engineering",
+      "role": "manager",
+      "active": true,
+      "createdAt": "2025-01-02T06:00:00.000+07:00"
+    },
+    {
+      "id": "USR038",
+      "name": "Nguyen Anh M",
+      "email": "user38@company.com",
+      "department": "Engineering",
+      "role": "employee",
+      "active": true,
+      "createdAt": "2025-01-02T07:00:00.000+07:00"
+    },
+    {
+      "id": "USR039",
+      "name": "Bui Minh N",
+      "email": "user39@company.com",
+      "department": "IT",
+      "role": "manager",
+      "active": true,
+      "createdAt": "2025-01-02T08:00:00.000+07:00"
+    },
+    {
+      "id": "USR040",
+      "name": "Bui Duc O",
+      "email": "user40@company.com",
+      "department": "IT",
+      "role": "contractor",
+      "active": false,
+      "createdAt": "2025-01-02T09:00:00.000+07:00"
+    },
+    {
+      "id": "USR041",
+      "name": "Nguyen Duc P",
+      "email": "user41@company.com",
+      "department": "IT",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2025-01-02T10:00:00.000+07:00"
+    },
+    {
+      "id": "USR042",
+      "name": "Bui Quan Q",
+      "email": "user42@company.com",
+      "department": "Marketing",
+      "role": "contractor",
+      "active": true,
+      "createdAt": "2025-01-02T11:00:00.000+07:00"
+    },
+    {
+      "id": "USR043",
+      "name": "Dang Thi R",
+      "email": "user43@company.com",
+      "department": "IT",
+      "role": "contractor",
+      "active": true,
+      "createdAt": "2025-01-02T12:00:00.000+07:00"
+    },
+    {
+      "id": "USR044",
+      "name": "Hoang Huy S",
+      "email": "user44@company.com",
+      "department": "Finance",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2025-01-02T13:00:00.000+07:00"
+    },
+    {
+      "id": "USR045",
+      "name": "Hoang Quan T",
+      "email": "user45@company.com",
+      "department": "Finance",
+      "role": "manager",
+      "active": true,
+      "createdAt": "2025-01-02T14:00:00.000+07:00"
+    },
+    {
+      "id": "USR046",
+      "name": "Bui Khanh U",
+      "email": "user46@company.com",
+      "department": "Engineering",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2025-01-02T15:00:00.000+07:00"
+    },
+    {
+      "id": "USR047",
+      "name": "Pham Anh V",
+      "email": "user47@company.com",
+      "department": "Engineering",
+      "role": "employee",
+      "active": true,
+      "createdAt": "2025-01-02T16:00:00.000+07:00"
+    },
+    {
+      "id": "USR048",
+      "name": "Dang Thi W",
+      "email": "user48@company.com",
+      "department": "IT",
+      "role": "manager",
+      "active": true,
+      "createdAt": "2025-01-02T17:00:00.000+07:00"
+    },
+    {
+      "id": "USR049",
+      "name": "Le Van X",
+      "email": "user49@company.com",
+      "department": "Finance",
+      "role": "employee",
+      "active": true,
+      "createdAt": "2025-01-02T18:00:00.000+07:00"
+    },
+    {
+      "id": "USR050",
+      "name": "Dang Van Y",
+      "email": "user50@company.com",
+      "department": "Sales",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2025-01-02T19:00:00.000+07:00"
+    },
+    {
+      "id": "USR051",
+      "name": "Dang Linh Z",
+      "email": "user51@company.com",
+      "department": "IT",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2025-01-02T20:00:00.000+07:00"
+    },
+    {
+      "id": "USR052",
+      "name": "Ngo Khanh A",
+      "email": "user52@company.com",
+      "department": "Engineering",
+      "role": "contractor",
+      "active": true,
+      "createdAt": "2025-01-02T21:00:00.000+07:00"
+    },
+    {
+      "id": "USR053",
+      "name": "Ngo Minh B",
+      "email": "user53@company.com",
+      "department": "Marketing",
+      "role": "contractor",
+      "active": true,
+      "createdAt": "2025-01-02T22:00:00.000+07:00"
+    },
+    {
+      "id": "USR054",
+      "name": "Le Linh C",
+      "email": "user54@company.com",
+      "department": "Sales",
+      "role": "employee",
+      "active": true,
+      "createdAt": "2025-01-02T23:00:00.000+07:00"
+    },
+    {
+      "id": "USR055",
+      "name": "Do Linh D",
+      "email": "user55@company.com",
+      "department": "Operations",
+      "role": "employee",
+      "active": true,
+      "createdAt": "2025-01-03T00:00:00.000+07:00"
+    },
+    {
+      "id": "USR056",
+      "name": "Nguyen Thi E",
+      "email": "user56@company.com",
+      "department": "IT",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2025-01-03T01:00:00.000+07:00"
+    },
+    {
+      "id": "USR057",
+      "name": "Le Van F",
+      "email": "user57@company.com",
+      "department": "Marketing",
+      "role": "employee",
+      "active": true,
+      "createdAt": "2025-01-03T02:00:00.000+07:00"
+    },
+    {
+      "id": "USR058",
+      "name": "Bui Thi G",
+      "email": "user58@company.com",
+      "department": "Engineering",
+      "role": "contractor",
+      "active": true,
+      "createdAt": "2025-01-03T03:00:00.000+07:00"
+    },
+    {
+      "id": "USR059",
+      "name": "Do Thi H",
+      "email": "user59@company.com",
+      "department": "Finance",
+      "role": "contractor",
+      "active": true,
+      "createdAt": "2025-01-03T04:00:00.000+07:00"
+    },
+    {
+      "id": "USR060",
+      "name": "Hoang Tuan I",
+      "email": "user60@company.com",
+      "department": "Marketing",
+      "role": "employee",
+      "active": false,
+      "createdAt": "2025-01-03T05:00:00.000+07:00"
+    },
+    {
+      "id": "USR061",
+      "name": "Bui Linh J",
+      "email": "user61@company.com",
+      "department": "Sales",
+      "role": "employee",
+      "active": true,
+      "createdAt": "2025-01-03T06:00:00.000+07:00"
+    },
+    {
+      "id": "USR062",
+      "name": "Le Tuan K",
+      "email": "user62@company.com",
+      "department": "Finance",
+      "role": "contractor",
+      "active": true,
+      "createdAt": "2025-01-03T07:00:00.000+07:00"
+    },
+    {
+      "id": "USR063",
+      "name": "Ngo Duc L",
+      "email": "user63@company.com",
+      "department": "IT",
+      "role": "employee",
+      "active": true,
+      "createdAt": "2025-01-03T08:00:00.000+07:00"
+    },
+    {
+      "id": "USR064",
+      "name": "Vu Duc M",
+      "email": "user64@company.com",
+      "department": "Sales",
+      "role": "employee",
+      "active": true,
+      "createdAt": "2025-01-03T09:00:00.000+07:00"
+    },
+    {
+      "id": "USR065",
+      "name": "Nguyen Van N",
+      "email": "user65@company.com",
+      "department": "Operations",
+      "role": "contractor",
+      "active": true,
+      "createdAt": "2025-01-03T10:00:00.000+07:00"
+    },
+    {
+      "id": "USR066",
+      "name": "Hoang Anh O",
+      "email": "user66@company.com",
+      "department": "IT",
+      "role": "contractor",
+      "active": true,
+      "createdAt": "2025-01-03T11:00:00.000+07:00"
+    },
+    {
+      "id": "USR067",
+      "name": "Do Linh P",
+      "email": "user67@company.com",
+      "department": "IT",
+      "role": "employee",
+      "active": true,
+      "createdAt": "2025-01-03T12:00:00.000+07:00"
+    },
+    {
+      "id": "USR068",
+      "name": "Pham Van Q",
+      "email": "user68@company.com",
+      "department": "HR",
+      "role": "contractor",
+      "active": true,
+      "createdAt": "2025-01-03T13:00:00.000+07:00"
+    },
+    {
+      "id": "USR069",
+      "name": "Tran Khanh R",
+      "email": "user69@company.com",
+      "department": "Marketing",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2025-01-03T14:00:00.000+07:00"
+    },
+    {
+      "id": "USR070",
+      "name": "Ngo Linh S",
+      "email": "user70@company.com",
+      "department": "Finance",
+      "role": "employee",
+      "active": true,
+      "createdAt": "2025-01-03T15:00:00.000+07:00"
+    }
+  ],
+  "nfcCards": [
+    {
+      "cardId": "NFC0000001",
+      "userId": "USR001",
+      "cardType": "vip",
+      "issuedDate": "2025-08-25T17:00:00.000+07:00",
+      "expiryDate": "2027-08-25T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T06:14:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000002",
+      "userId": "USR002",
+      "cardType": "contractor",
+      "issuedDate": "2025-02-06T17:00:00.000+07:00",
+      "expiryDate": "2026-02-06T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T03:04:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000003",
+      "userId": "USR003",
+      "cardType": "employee",
+      "issuedDate": "2025-05-29T17:00:00.000+07:00",
+      "expiryDate": "2027-05-29T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T08:25:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000004",
+      "userId": "USR004",
+      "cardType": "visitor",
+      "issuedDate": "2025-12-26T17:00:00.000+07:00",
+      "expiryDate": "2026-12-26T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T11:46:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000005",
+      "userId": "USR005",
+      "cardType": "employee",
+      "issuedDate": "2025-03-02T17:00:00.000+07:00",
+      "expiryDate": "2026-03-02T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T13:31:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000006",
+      "userId": "USR006",
+      "cardType": "contractor",
+      "issuedDate": "2025-04-30T17:00:00.000+07:00",
+      "expiryDate": "2028-04-30T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T01:12:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000007",
+      "userId": "USR007",
+      "cardType": "contractor",
+      "issuedDate": "2025-08-31T17:00:00.000+07:00",
+      "expiryDate": "2027-08-31T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T15:14:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000008",
+      "userId": "USR008",
+      "cardType": "vip",
+      "issuedDate": "2025-10-21T17:00:00.000+07:00",
+      "expiryDate": "2026-10-21T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T08:09:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000009",
+      "userId": "USR009",
+      "cardType": "vip",
+      "issuedDate": "2025-01-07T17:00:00.000+07:00",
+      "expiryDate": "2027-01-07T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T17:17:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000000A",
+      "userId": "USR010",
+      "cardType": "visitor",
+      "issuedDate": "2025-12-06T17:00:00.000+07:00",
+      "expiryDate": "2027-12-06T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T08:59:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000000B",
+      "userId": "USR011",
+      "cardType": "employee",
+      "issuedDate": "2025-10-29T17:00:00.000+07:00",
+      "expiryDate": "2026-10-29T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T01:09:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000000C",
+      "userId": "USR012",
+      "cardType": "employee",
+      "issuedDate": "2025-07-26T17:00:00.000+07:00",
+      "expiryDate": "2027-07-26T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T16:53:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000000D",
+      "userId": "USR013",
+      "cardType": "employee",
+      "issuedDate": "2025-05-19T17:00:00.000+07:00",
+      "expiryDate": "2028-05-19T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T08:28:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000000E",
+      "userId": "USR014",
+      "cardType": "vip",
+      "issuedDate": "2025-02-25T17:00:00.000+07:00",
+      "expiryDate": "2026-02-25T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T08:55:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000000F",
+      "userId": "USR015",
+      "cardType": "visitor",
+      "issuedDate": "2025-01-10T17:00:00.000+07:00",
+      "expiryDate": "2028-01-10T17:00:00.000+07:00",
+      "active": false,
+      "lastUsed": "2026-01-07T17:28:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000010",
+      "userId": "USR016",
+      "cardType": "employee",
+      "issuedDate": "2025-12-19T17:00:00.000+07:00",
+      "expiryDate": "2028-12-19T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T02:41:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000011",
+      "userId": "USR017",
+      "cardType": "employee",
+      "issuedDate": "2025-06-09T17:00:00.000+07:00",
+      "expiryDate": "2027-06-09T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T15:08:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000012",
+      "userId": "USR018",
+      "cardType": "employee",
+      "issuedDate": "2025-04-22T17:00:00.000+07:00",
+      "expiryDate": "2027-04-22T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T14:27:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000013",
+      "userId": "USR019",
+      "cardType": "vip",
+      "issuedDate": "2025-06-30T17:00:00.000+07:00",
+      "expiryDate": "2027-06-30T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T10:05:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000014",
+      "userId": "USR020",
+      "cardType": "vip",
+      "issuedDate": "2025-11-10T17:00:00.000+07:00",
+      "expiryDate": "2026-11-10T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T12:26:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000015",
+      "userId": "USR021",
+      "cardType": "visitor",
+      "issuedDate": "2025-06-22T17:00:00.000+07:00",
+      "expiryDate": "2027-06-22T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T08:06:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000016",
+      "userId": "USR022",
+      "cardType": "vip",
+      "issuedDate": "2025-04-19T17:00:00.000+07:00",
+      "expiryDate": "2027-04-19T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T03:02:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000017",
+      "userId": "USR023",
+      "cardType": "contractor",
+      "issuedDate": "2025-01-14T17:00:00.000+07:00",
+      "expiryDate": "2027-01-14T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T14:10:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000018",
+      "userId": "USR024",
+      "cardType": "employee",
+      "issuedDate": "2025-08-01T17:00:00.000+07:00",
+      "expiryDate": "2027-08-01T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T07:03:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000019",
+      "userId": "USR025",
+      "cardType": "visitor",
+      "issuedDate": "2025-04-21T17:00:00.000+07:00",
+      "expiryDate": "2028-04-21T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T08:52:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000001A",
+      "userId": "USR026",
+      "cardType": "visitor",
+      "issuedDate": "2025-07-20T17:00:00.000+07:00",
+      "expiryDate": "2027-07-20T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T03:33:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000001B",
+      "userId": "USR027",
+      "cardType": "employee",
+      "issuedDate": "2025-01-20T17:00:00.000+07:00",
+      "expiryDate": "2027-01-20T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T03:00:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000001C",
+      "userId": "USR028",
+      "cardType": "vip",
+      "issuedDate": "2025-02-21T17:00:00.000+07:00",
+      "expiryDate": "2026-02-21T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T05:19:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000001D",
+      "userId": "USR029",
+      "cardType": "employee",
+      "issuedDate": "2025-01-10T17:00:00.000+07:00",
+      "expiryDate": "2026-01-10T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T11:47:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000001E",
+      "userId": "USR030",
+      "cardType": "employee",
+      "issuedDate": "2025-11-10T17:00:00.000+07:00",
+      "expiryDate": "2028-11-10T17:00:00.000+07:00",
+      "active": false,
+      "lastUsed": "2026-01-07T05:30:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000001F",
+      "userId": "USR031",
+      "cardType": "visitor",
+      "issuedDate": "2025-12-28T17:00:00.000+07:00",
+      "expiryDate": "2027-12-28T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T08:26:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000020",
+      "userId": "USR032",
+      "cardType": "employee",
+      "issuedDate": "2025-08-30T17:00:00.000+07:00",
+      "expiryDate": "2028-08-30T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T17:21:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000021",
+      "userId": "USR033",
+      "cardType": "contractor",
+      "issuedDate": "2025-08-02T17:00:00.000+07:00",
+      "expiryDate": "2027-08-02T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T09:21:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000022",
+      "userId": "USR034",
+      "cardType": "visitor",
+      "issuedDate": "2025-01-27T17:00:00.000+07:00",
+      "expiryDate": "2026-01-27T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T09:03:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000023",
+      "userId": "USR035",
+      "cardType": "visitor",
+      "issuedDate": "2025-09-17T17:00:00.000+07:00",
+      "expiryDate": "2028-09-17T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T15:36:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000024",
+      "userId": "USR036",
+      "cardType": "contractor",
+      "issuedDate": "2025-11-15T17:00:00.000+07:00",
+      "expiryDate": "2027-11-15T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T14:01:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000025",
+      "userId": "USR037",
+      "cardType": "employee",
+      "issuedDate": "2025-06-16T17:00:00.000+07:00",
+      "expiryDate": "2027-06-16T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T07:58:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000026",
+      "userId": "USR038",
+      "cardType": "vip",
+      "issuedDate": "2025-08-15T17:00:00.000+07:00",
+      "expiryDate": "2027-08-15T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T16:46:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000027",
+      "userId": "USR039",
+      "cardType": "employee",
+      "issuedDate": "2025-02-04T17:00:00.000+07:00",
+      "expiryDate": "2028-02-04T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T14:59:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000028",
+      "userId": "USR040",
+      "cardType": "vip",
+      "issuedDate": "2025-01-27T17:00:00.000+07:00",
+      "expiryDate": "2027-01-27T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T05:36:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000029",
+      "userId": "USR041",
+      "cardType": "vip",
+      "issuedDate": "2025-11-12T17:00:00.000+07:00",
+      "expiryDate": "2028-11-12T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T17:06:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000002A",
+      "userId": "USR042",
+      "cardType": "employee",
+      "issuedDate": "2025-02-06T17:00:00.000+07:00",
+      "expiryDate": "2027-02-06T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T01:28:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000002B",
+      "userId": "USR043",
+      "cardType": "visitor",
+      "issuedDate": "2025-01-21T17:00:00.000+07:00",
+      "expiryDate": "2026-01-21T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T04:20:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000002C",
+      "userId": "USR044",
+      "cardType": "vip",
+      "issuedDate": "2025-09-06T17:00:00.000+07:00",
+      "expiryDate": "2028-09-06T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T15:59:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000002D",
+      "userId": "USR045",
+      "cardType": "visitor",
+      "issuedDate": "2025-06-22T17:00:00.000+07:00",
+      "expiryDate": "2026-06-22T17:00:00.000+07:00",
+      "active": false,
+      "lastUsed": "2026-01-07T09:48:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000002E",
+      "userId": "USR046",
+      "cardType": "visitor",
+      "issuedDate": "2025-05-06T17:00:00.000+07:00",
+      "expiryDate": "2027-05-06T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T12:06:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000002F",
+      "userId": "USR047",
+      "cardType": "visitor",
+      "issuedDate": "2025-01-20T17:00:00.000+07:00",
+      "expiryDate": "2026-01-20T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T08:08:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000030",
+      "userId": "USR048",
+      "cardType": "employee",
+      "issuedDate": "2025-01-16T17:00:00.000+07:00",
+      "expiryDate": "2027-01-16T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T15:49:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000031",
+      "userId": "USR049",
+      "cardType": "contractor",
+      "issuedDate": "2025-11-20T17:00:00.000+07:00",
+      "expiryDate": "2028-11-20T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T06:43:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000032",
+      "userId": "USR050",
+      "cardType": "visitor",
+      "issuedDate": "2025-11-20T17:00:00.000+07:00",
+      "expiryDate": "2026-11-20T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T03:41:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000033",
+      "userId": "USR051",
+      "cardType": "employee",
+      "issuedDate": "2025-10-31T17:00:00.000+07:00",
+      "expiryDate": "2027-10-31T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T07:09:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000034",
+      "userId": "USR052",
+      "cardType": "visitor",
+      "issuedDate": "2025-11-05T17:00:00.000+07:00",
+      "expiryDate": "2027-11-05T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T03:05:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000035",
+      "userId": "USR053",
+      "cardType": "contractor",
+      "issuedDate": "2025-06-14T17:00:00.000+07:00",
+      "expiryDate": "2027-06-14T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T09:41:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000036",
+      "userId": "USR054",
+      "cardType": "visitor",
+      "issuedDate": "2025-10-03T17:00:00.000+07:00",
+      "expiryDate": "2027-10-03T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T02:24:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000037",
+      "userId": "USR055",
+      "cardType": "employee",
+      "issuedDate": "2025-04-01T17:00:00.000+07:00",
+      "expiryDate": "2028-04-01T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T03:38:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000038",
+      "userId": "USR056",
+      "cardType": "vip",
+      "issuedDate": "2025-02-08T17:00:00.000+07:00",
+      "expiryDate": "2027-02-08T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T11:49:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000039",
+      "userId": "USR057",
+      "cardType": "employee",
+      "issuedDate": "2025-03-04T17:00:00.000+07:00",
+      "expiryDate": "2027-03-04T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T15:47:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000003A",
+      "userId": "USR058",
+      "cardType": "visitor",
+      "issuedDate": "2025-04-20T17:00:00.000+07:00",
+      "expiryDate": "2026-04-20T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T15:57:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000003B",
+      "userId": "USR059",
+      "cardType": "visitor",
+      "issuedDate": "2025-10-26T17:00:00.000+07:00",
+      "expiryDate": "2027-10-26T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T11:07:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000003C",
+      "userId": "USR060",
+      "cardType": "employee",
+      "issuedDate": "2025-10-12T17:00:00.000+07:00",
+      "expiryDate": "2027-10-12T17:00:00.000+07:00",
+      "active": false,
+      "lastUsed": "2026-01-07T10:28:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000003D",
+      "userId": "USR061",
+      "cardType": "employee",
+      "issuedDate": "2025-09-19T17:00:00.000+07:00",
+      "expiryDate": "2027-09-19T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T02:12:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000003E",
+      "userId": "USR062",
+      "cardType": "visitor",
+      "issuedDate": "2025-06-02T17:00:00.000+07:00",
+      "expiryDate": "2028-06-02T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T12:55:00.000+07:00"
+    },
+    {
+      "cardId": "NFC000003F",
+      "userId": "USR063",
+      "cardType": "vip",
+      "issuedDate": "2025-05-25T17:00:00.000+07:00",
+      "expiryDate": "2026-05-25T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T01:21:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000040",
+      "userId": "USR064",
+      "cardType": "visitor",
+      "issuedDate": "2025-12-29T17:00:00.000+07:00",
+      "expiryDate": "2027-12-29T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T08:04:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000041",
+      "userId": "USR065",
+      "cardType": "visitor",
+      "issuedDate": "2025-09-08T17:00:00.000+07:00",
+      "expiryDate": "2026-09-08T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T09:22:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000042",
+      "userId": "USR066",
+      "cardType": "employee",
+      "issuedDate": "2025-05-10T17:00:00.000+07:00",
+      "expiryDate": "2028-05-10T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T10:46:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000043",
+      "userId": "USR067",
+      "cardType": "visitor",
+      "issuedDate": "2025-06-21T17:00:00.000+07:00",
+      "expiryDate": "2028-06-21T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T10:28:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000044",
+      "userId": "USR068",
+      "cardType": "visitor",
+      "issuedDate": "2025-05-16T17:00:00.000+07:00",
+      "expiryDate": "2027-05-16T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T01:21:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000045",
+      "userId": "USR069",
+      "cardType": "employee",
+      "issuedDate": "2025-02-23T17:00:00.000+07:00",
+      "expiryDate": "2028-02-23T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T05:42:00.000+07:00"
+    },
+    {
+      "cardId": "NFC0000046",
+      "userId": "USR070",
+      "cardType": "vip",
+      "issuedDate": "2025-07-03T17:00:00.000+07:00",
+      "expiryDate": "2028-07-03T17:00:00.000+07:00",
+      "active": true,
+      "lastUsed": "2026-01-07T08:04:00.000+07:00"
+    }
+  ],
+  "accessPoints": [
+    {
+      "id": "AP001",
+      "name": "Main Entrance",
+      "building": "Building A",
+      "floor": 1,
+      "zone": "Public",
+      "status": "online",
+      "lastMaintenance": "2025-12-01T04:33:00.000+07:00",
+      "accessCount": 5461
+    },
+    {
+      "id": "AP002",
+      "name": "Server Room",
+      "building": "Building A",
+      "floor": 3,
+      "zone": "Restricted",
+      "status": "online",
+      "lastMaintenance": "2025-12-01T03:11:00.000+07:00",
+      "accessCount": 3854
+    },
+    {
+      "id": "AP003",
+      "name": "Office Floor 2",
+      "building": "Building B",
+      "floor": 2,
+      "zone": "Office",
+      "status": "online",
+      "lastMaintenance": "2025-12-01T00:13:00.000+07:00",
+      "accessCount": 6794
+    },
+    {
+      "id": "AP004",
+      "name": "Parking Garage",
+      "building": "Building C",
+      "floor": -1,
+      "zone": "Parking",
+      "status": "online",
+      "lastMaintenance": "2025-12-01T06:06:00.000+07:00",
+      "accessCount": 5051
+    },
+    {
+      "id": "AP005",
+      "name": "Executive Suite",
+      "building": "Building A",
+      "floor": 5,
+      "zone": "Executive",
+      "status": "online",
+      "lastMaintenance": "2025-11-30T21:55:00.000+07:00",
+      "accessCount": 3051
+    },
+    {
+      "id": "AP006",
+      "name": "Cafeteria",
+      "building": "Building B",
+      "floor": 1,
+      "zone": "Public",
+      "status": "online",
+      "lastMaintenance": "2025-12-01T00:10:00.000+07:00",
+      "accessCount": 5213
+    },
+    {
+      "id": "AP007",
+      "name": "Lab Area",
+      "building": "Building C",
+      "floor": 2,
+      "zone": "Restricted",
+      "status": "online",
+      "lastMaintenance": "2025-11-30T18:06:00.000+07:00",
+      "accessCount": 8893
+    },
+    {
+      "id": "AP008",
+      "name": "Meeting Rooms",
+      "building": "Building A",
+      "floor": 4,
+      "zone": "Office",
+      "status": "online",
+      "lastMaintenance": "2025-11-30T23:13:00.000+07:00",
+      "accessCount": 1296
+    },
+    {
+      "id": "AP009",
+      "name": "Storage",
+      "building": "Building B",
+      "floor": -1,
+      "zone": "Storage",
+      "status": "online",
+      "lastMaintenance": "2025-11-30T19:10:00.000+07:00",
+      "accessCount": 2292
+    },
+    {
+      "id": "AP010",
+      "name": "Rooftop Access",
+      "building": "Building A",
+      "floor": 6,
+      "zone": "Restricted",
+      "status": "online",
+      "lastMaintenance": "2025-12-01T06:43:00.000+07:00",
+      "accessCount": 2032
+    }
+  ],
+  "metadata": {
+    "generatedAt": "2026-01-07T15:57:02.553Z",
+    "totalRecords": 220,
+    "description": "Fake data for NFC Access Control System - ~2000 lines"
+  }
+}
