@@ -1,11 +1,11 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const authController = require('../controllers/auth.controller');
-const { authMiddleware } = require('../middleware/auth');
-const { validateBody } = require('../middleware/validation');
-const { authLimiter } = require('../middleware/rateLimiter');
-const { loginSchema, registerSchema } = require('../utils/validators');
+const authController = require("../../controllers/auth.controller");
+const { authMiddleware } = require("../../middleware/auth");
+const { validateBody } = require("../../middleware/validation");
+const { authLimiter } = require("../../middleware/rateLimiter");
+const { loginSchema, registerSchema } = require("../../utils/validators");
 
 /**
  * @swagger
@@ -63,7 +63,7 @@ const { loginSchema, registerSchema } = require('../utils/validators');
  *         description: Quá nhiều request
  */
 router.post(
-  '/login',
+  "/login",
   authLimiter,
   validateBody(loginSchema),
   authController.login
@@ -108,7 +108,7 @@ router.post(
  *         description: Email đã tồn tại
  */
 router.post(
-  '/register',
+  "/register",
   authLimiter,
   validateBody(registerSchema),
   authController.register
@@ -129,11 +129,7 @@ router.post(
  *       401:
  *         description: Chưa đăng nhập
  */
-router.post(
-  '/logout',
-  authMiddleware,
-  authController.logout
-);
+router.post("/logout", authMiddleware, authController.logout);
 
 /**
  * @swagger
@@ -160,10 +156,6 @@ router.post(
  *       401:
  *         description: Chưa đăng nhập
  */
-router.get(
-  '/me',
-  authMiddleware,
-  authController.me
-);
+router.get("/me", authMiddleware, authController.me);
 
 module.exports = router;

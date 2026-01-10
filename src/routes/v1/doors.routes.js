@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
-const doorsController = require("../controllers/doors.controller");
-const { authMiddleware } = require("../middleware/auth");
-const { deviceAuthMiddleware } = require("../middleware/deviceAuth");
-const { validateBody } = require("../middleware/validation");
-const { deviceLimiter } = require("../middleware/rateLimiter");
-const { doorCommandSchema, doorStatusSchema } = require("../utils/validators");
+const doorsController = require("../../controllers/doors.controller");
+const { authMiddleware } = require("../../middleware/auth");
+const { deviceAuthMiddleware } = require("../../middleware/deviceAuth");
+const { validateBody } = require("../../middleware/validation");
+const { deviceLimiter } = require("../../middleware/rateLimiter");
+const { doorCommandSchema, doorStatusSchema } = require("../../utils/validators");
 
 /**
  * @swagger

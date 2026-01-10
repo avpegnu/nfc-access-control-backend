@@ -1,10 +1,14 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const usersController = require('../controllers/users.controller');
-const { authMiddleware } = require('../middleware/auth');
-const { validateBody, validateQuery } = require('../middleware/validation');
-const { createUserSchema, updateUserSchema, paginationSchema } = require('../utils/validators');
+const usersController = require("../../controllers/users.controller");
+const { authMiddleware } = require("../../middleware/auth");
+const { validateBody, validateQuery } = require("../../middleware/validation");
+const {
+  createUserSchema,
+  updateUserSchema,
+  paginationSchema,
+} = require("../../utils/validators");
 
 /**
  * @swagger
@@ -55,11 +59,7 @@ router.use(authMiddleware);
  *       401:
  *         description: Chưa đăng nhập
  */
-router.get(
-  '/',
-  validateQuery(paginationSchema),
-  usersController.getAll
-);
+router.get("/", validateQuery(paginationSchema), usersController.getAll);
 
 /**
  * @swagger
@@ -91,10 +91,7 @@ router.get(
  *       404:
  *         description: Không tìm thấy người dùng
  */
-router.get(
-  '/:id',
-  usersController.getById
-);
+router.get("/:id", usersController.getById);
 
 /**
  * @swagger
@@ -136,11 +133,7 @@ router.get(
  *       409:
  *         description: Email đã tồn tại
  */
-router.post(
-  '/',
-  validateBody(createUserSchema),
-  usersController.create
-);
+router.post("/", validateBody(createUserSchema), usersController.create);
 
 /**
  * @swagger
@@ -182,11 +175,7 @@ router.post(
  *       404:
  *         description: Không tìm thấy người dùng
  */
-router.put(
-  '/:id',
-  validateBody(updateUserSchema),
-  usersController.update
-);
+router.put("/:id", validateBody(updateUserSchema), usersController.update);
 
 /**
  * @swagger
@@ -209,10 +198,7 @@ router.put(
  *       404:
  *         description: Không tìm thấy người dùng
  */
-router.delete(
-  '/:id',
-  usersController.remove
-);
+router.delete("/:id", usersController.remove);
 
 /**
  * @swagger
@@ -236,9 +222,6 @@ router.delete(
  *       404:
  *         description: Không tìm thấy người dùng
  */
-router.patch(
-  '/:id/toggle',
-  usersController.toggleActive
-);
+router.patch("/:id/toggle", usersController.toggleActive);
 
 module.exports = router;

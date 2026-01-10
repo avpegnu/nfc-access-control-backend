@@ -1,10 +1,10 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 
-const realtimeService = require('../services/realtime.service');
-const { verifyToken, isTokenBlacklisted } = require('../config/jwt');
-const logger = require('../utils/logger');
+const realtimeService = require("../../services/realtime.service");
+const { verifyToken, isTokenBlacklisted } = require("../../config/jwt");
+const logger = require("../../utils/logger");
 
 /**
  * @swagger
@@ -37,7 +37,7 @@ const logger = require('../utils/logger');
  *       401:
  *         description: Token không hợp lệ hoặc đã hết hạn
  */
-router.get('/events', (req, res) => {
+router.get("/events", (req, res) => {
   // Get token from query param (SSE can't use headers easily)
   const token = req.query.token;
 
@@ -45,9 +45,9 @@ router.get('/events', (req, res) => {
     return res.status(401).json({
       success: false,
       error: {
-        code: 'AUTH_NO_TOKEN',
-        message: 'Token không được cung cấp'
-      }
+        code: "AUTH_NO_TOKEN",
+        message: "Token không được cung cấp",
+      },
     });
   }
 
@@ -57,9 +57,9 @@ router.get('/events', (req, res) => {
       return res.status(401).json({
         success: false,
         error: {
-          code: 'AUTH_TOKEN_REVOKED',
-          message: 'Token đã bị thu hồi'
-        }
+          code: "AUTH_TOKEN_REVOKED",
+          message: "Token đã bị thu hồi",
+        },
       });
     }
 
@@ -68,37 +68,44 @@ router.get('/events', (req, res) => {
     return res.status(401).json({
       success: false,
       error: {
-        code: 'AUTH_INVALID_TOKEN',
-        message: 'Token không hợp lệ'
-      }
+        code: "AUTH_INVALID_TOKEN",
+        message: "Token không hợp lệ",
+      },
     });
   }
 
   // Set SSE headers
   res.writeHead(200, {
-    'Content-Type': 'text/event-stream',
-    'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive',
-    'Access-Control-Allow-Origin': '*',
-    'X-Accel-Buffering': 'no' // Disable nginx buffering
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+    Connection: "keep-alive",
+    "Access-Control-Allow-Origin": "*",
+    "X-Accel-Buffering": "no", // Disable nginx buffering
   });
 
   // Generate unique client ID
   const clientId = uuidv4();
 
   // Send initial connection message
-  res.write(`event: connected\ndata: ${JSON.stringify({ clientId, timestamp: Date.now() })}\n\n`);
+  res.write(
+    `event: connected\ndata: ${JSON.stringify({
+      clientId,
+      timestamp: Date.now(),
+    })}\n\n`
+  );
 
   // Add client to realtime service
   realtimeService.addClient(clientId, res);
 
   // Send heartbeat every 30 seconds
   const heartbeatInterval = setInterval(() => {
-    res.write(`event: heartbeat\ndata: ${JSON.stringify({ timestamp: Date.now() })}\n\n`);
+    res.write(
+      `event: heartbeat\ndata: ${JSON.stringify({ timestamp: Date.now() })}\n\n`
+    );
   }, 30000);
 
   // Cleanup on client disconnect
-  req.on('close', () => {
+  req.on("close", () => {
     clearInterval(heartbeatInterval);
     realtimeService.removeClient(clientId);
     logger.info(`SSE client closed: ${clientId}`);
@@ -130,12 +137,12 @@ router.get('/events', (req, res) => {
  *                       type: integer
  *                       example: 5
  */
-router.get('/status', (req, res) => {
+router.get("/status", (req, res) => {
   res.json({
     success: true,
     data: {
-      connectedClients: realtimeService.getClientCount()
-    }
+      connectedClients: realtimeService.getClientCount(),
+    },
   });
 });
 
